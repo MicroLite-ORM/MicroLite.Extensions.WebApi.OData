@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Extensions.WebApi.OData", "MicroLite.Extensions.WebApi.OData\MicroLite.Extensions.WebApi.OData.csproj", "{05E061CC-54D7-4B30-B933-F8F54D18BA0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Extensions.WebApi.OData.Tests", "MicroLite.Extensions.WebApi.OData.Tests\MicroLite.Extensions.WebApi.OData.Tests.csproj", "{363AE9F6-4CCE-460A-8D86-6A958DDEECD1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05E061CC-54D7-4B30-B933-F8F54D18BA0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05E061CC-54D7-4B30-B933-F8F54D18BA0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05E061CC-54D7-4B30-B933-F8F54D18BA0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05E061CC-54D7-4B30-B933-F8F54D18BA0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{363AE9F6-4CCE-460A-8D86-6A958DDEECD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{363AE9F6-4CCE-460A-8D86-6A958DDEECD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{363AE9F6-4CCE-460A-8D86-6A958DDEECD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{363AE9F6-4CCE-460A-8D86-6A958DDEECD1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
