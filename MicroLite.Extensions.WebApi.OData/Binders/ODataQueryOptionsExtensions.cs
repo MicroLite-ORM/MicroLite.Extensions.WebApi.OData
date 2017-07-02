@@ -19,7 +19,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
     {
         internal static SqlQuery CreateSqlQuery(this ODataQueryOptions queryOptions)
         {
-            var objectInfo = ObjectInfo.For(queryOptions.Model.ClrType);
+            var objectInfo = ObjectInfo.For(queryOptions.EntitySet.EdmType.ClrType);
 
             var whereSqlBuilder = SelectBinder.BindSelect(queryOptions.Select, objectInfo);
             var orderBySqlBuilder = FilterBinder.BindFilter(queryOptions.Filter, objectInfo, whereSqlBuilder);
