@@ -21,7 +21,7 @@
         public void BindBindSelectThrowsArgumentNullExceptionForNullObjectInfo()
         {
             var queryOptions = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers"),
+                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
             var exception = Assert.Throws<ArgumentNullException>(
@@ -39,7 +39,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
@@ -65,7 +65,7 @@
                 var queryOptions = new ODataQueryOptions(
                     new HttpRequestMessage(
                         HttpMethod.Get,
-                        "http://services.microlite.org/api/Customers?$select=Name,DateOfBirth,Status"),
+                        "http://services.microlite.org/odata/Customers?$select=Name,DateOfBirth,Status"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
@@ -89,7 +89,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$select=*"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$select=*"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();

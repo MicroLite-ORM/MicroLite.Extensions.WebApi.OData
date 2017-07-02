@@ -16,7 +16,7 @@
             TestHelper.EnsureEDM();
 
             var option = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$select=Forename,Surname&$filter=Forename eq 'John'&$orderby=Surname"),
+                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$select=Forename,Surname&$filter=Forename eq 'John'&$orderby=Surname"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
             var sqlQuery = option.CreateSqlQuery();
@@ -32,7 +32,7 @@
             TestHelper.EnsureEDM();
 
             var option = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$filter=Forename eq 'John'&$orderby=Surname"),
+                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Forename eq 'John'&$orderby=Surname"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
             var sqlQuery = option.CreateSqlQuery();

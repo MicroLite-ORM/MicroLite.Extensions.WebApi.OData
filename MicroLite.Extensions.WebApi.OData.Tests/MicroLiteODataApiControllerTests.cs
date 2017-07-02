@@ -1,7 +1,6 @@
 ﻿namespace MicroLite.Extensions.WebApi.Tests.OData
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -24,7 +23,7 @@
             TestHelper.EnsureEDM();
 
             var queryOptions = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$skip=-1"),
+                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=-1"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
             var controller = new CustomerController(Mock.Of<IAsyncSession>());
@@ -250,7 +249,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$skip=15"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=15"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 50, 0)));
@@ -281,7 +280,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$top=15"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$top=15"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 15, 0)));
@@ -382,7 +381,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$top=25"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$top=25"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 25, 100)));
@@ -403,11 +402,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -424,7 +423,7 @@
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
                 Assert.NotNull(odataContent.NextLink);
-                Assert.Equal(new Uri("http://services.microlite.org/api/Customers?$skip=25&$top=25"), odataContent.NextLink);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers?$skip=25&$top=25"), odataContent.NextLink);
             }
 
             [Fact]
@@ -454,7 +453,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 50, 100)));
@@ -475,11 +474,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -496,7 +495,7 @@
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
                 Assert.NotNull(odataContent.NextLink);
-                Assert.Equal(new Uri("http://services.microlite.org/api/Customers?$skip=50"), odataContent.NextLink);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers?$skip=50"), odataContent.NextLink);
             }
 
             [Fact]
@@ -526,7 +525,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$skip=75&$top=25"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=75&$top=25"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(4, new object[0], 25, 100)));
@@ -547,11 +546,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -597,7 +596,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$skip=25&$top=25"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=25&$top=25"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(2, new object[0], 25, 100)));
@@ -618,11 +617,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -639,7 +638,7 @@
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
                 Assert.NotNull(odataContent.NextLink);
-                Assert.Equal(new Uri("http://services.microlite.org/api/Customers?$skip=50&$top=25"), odataContent.NextLink);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers?$skip=50&$top=25"), odataContent.NextLink);
             }
 
             [Fact]
@@ -669,7 +668,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$top=25&$count=true"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$top=25&$count=true"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 25, 100)));
@@ -690,11 +689,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -712,7 +711,7 @@
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
                 Assert.NotNull(odataContent.NextLink);
-                Assert.Equal(new Uri("http://services.microlite.org/api/Customers?$skip=25&$count=true&$top=25"), odataContent.NextLink);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers?$skip=25&$count=true&$top=25"), odataContent.NextLink);
             }
 
             [Fact]
@@ -742,7 +741,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$count=true"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$count=true"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 50, 100)));
@@ -763,11 +762,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -785,7 +784,7 @@
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
                 Assert.NotNull(odataContent.NextLink);
-                Assert.Equal(new Uri("http://services.microlite.org/api/Customers?$skip=50&$count=true"), odataContent.NextLink);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers?$skip=50&$count=true"), odataContent.NextLink);
             }
 
             [Fact]
@@ -815,7 +814,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$skip=75&$top=25&$count=true"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=75&$top=25&$count=true"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(4, new object[0], 25, 100)));
@@ -836,11 +835,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -886,7 +885,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$skip=25&$count=true&$top=25"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=25&$count=true&$top=25"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(2, new object[0], 25, 100)));
@@ -907,11 +906,11 @@
             }
 
             [Fact]
-            public void TheODataResponseContent_ContextIsNotSet()
+            public void TheODataResponseContent_ContextIsSet()
             {
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
-                Assert.Null(odataContent.Context);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers"), odataContent.Context);
             }
 
             [Fact]
@@ -929,7 +928,7 @@
                 var odataContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
 
                 Assert.NotNull(odataContent.NextLink);
-                Assert.Equal(new Uri("http://services.microlite.org/api/Customers?$skip=50&$count=true&$top=25"), odataContent.NextLink);
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers?$skip=50&$count=true&$top=25"), odataContent.NextLink);
             }
 
             [Fact]
@@ -958,7 +957,7 @@
                 TestHelper.EnsureEDM();
 
                 this.queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/api/Customers?$format=application/xml"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$format=application/xml"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.mockSession.Setup(x => x.PagedAsync<dynamic>(It.IsAny<SqlQuery>(), It.IsAny<PagingOptions>())).Returns(System.Threading.Tasks.Task.FromResult(new PagedResult<dynamic>(1, new object[0], 50, 0)));
@@ -1005,7 +1004,7 @@
             {
                 this.GetEntityResourceUri = (int id) =>
                 {
-                    return new Uri("http://services.microlite.org/api/Customers/" + id.ToString());
+                    return new Uri("http://services.microlite.org/odata/Customers/" + id.ToString());
                 };
             }
 
