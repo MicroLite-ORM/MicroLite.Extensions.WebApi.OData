@@ -1,6 +1,8 @@
 ﻿namespace MicroLite.Extensions.WebApi.Tests.OData
 {
     using System;
+    using System.Collections.Generic;
+    using System.Dynamic;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -300,21 +302,92 @@
             }
         }
 
-        public class WhenCallingGetEntityCount
+        public class WhenCalling_DeleteEntityResponseAsync_AndAnEntityIsDeleted
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_DeleteEntityResponseAsync_AndAnEntityIsDeleted()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.Advanced.DeleteAsync(typeof(Customer), this.identifier)).Returns(System.Threading.Tasks.Task.FromResult(true));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Delete, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Delete(this.identifier).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNoContent()
+            {
+                Assert.Equal(HttpStatusCode.NoContent, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_DeleteEntityResponseAsync_AndAnEntityIsNotDeleted
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_DeleteEntityResponseAsync_AndAnEntityIsNotDeleted()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.Advanced.DeleteAsync(typeof(Customer), this.identifier)).Returns(System.Threading.Tasks.Task.FromResult(false));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Delete, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Delete(this.identifier).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNotFound()
+            {
+                Assert.Equal(HttpStatusCode.NotFound, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_GetCountResponseAsync
         {
             private readonly HttpContent content;
             private readonly CustomerController controller;
             private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
             private readonly HttpResponseMessage response;
 
-            public WhenCallingGetEntityCount()
+            public WhenCalling_GetCountResponseAsync()
             {
                 TestHelper.EnsureEDM();
 
                 this.mockSession.Setup(x => x.Advanced.ExecuteScalarAsync<long>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult(150L));
 
                 this.controller = new CustomerController(this.mockSession.Object);
-                this.controller.Request = new HttpRequestMessage();
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers/$count");
                 this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
 
                 this.response = this.controller.Count().Result;
@@ -345,6 +418,478 @@
             public void TheResponseContentType_IsTextPlain()
             {
                 Assert.Equal("text/plain", response.Content.Headers.ContentType.MediaType);
+            }
+        }
+
+        public class WhenCalling_GetEntityPropertyResponseAsync_AndThePropertyNameIsInvalid
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly string propertyName = "Foo";
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityPropertyResponseAsync_AndThePropertyNameIsInvalid()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(null));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)/Foo");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.GetProperty(this.identifier, this.propertyName).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldContainTheErrorMessage()
+            {
+                Assert.Equal("{\"error\":{\"code\":\"\",\"message\":\"The type 'MicroLite.Extensions.WebApi.Tests.OData.TestEntities.Customer' does not contain a property named 'Foo'.\"}}", Newtonsoft.Json.JsonConvert.SerializeObject(((ObjectContent)this.response.Content).Value));
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeBadRequest()
+            {
+                Assert.Equal(HttpStatusCode.BadRequest, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_GetEntityPropertyResponseAsync_AndThePropertyNameIsValid
+        {
+            private readonly CustomerController controller;
+            private readonly ExpandoObject entity = new ExpandoObject();
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly string propertyName = "Name";
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityPropertyResponseAsync_AndThePropertyNameIsValid()
+            {
+                TestHelper.EnsureEDM();
+
+                ((IDictionary<string, object>)this.entity)["Name"] = "Bob";
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(entity));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)/Name");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.GetProperty(this.identifier, this.propertyName).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeOK()
+            {
+                Assert.Equal(HttpStatusCode.OK, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+
+            [Fact]
+            public void TheResponseContent_IsObjectContent_WithODataResponseContentValue()
+            {
+                Assert.IsType<ODataResponseContent>(((ObjectContent)this.response.Content).Value);
+            }
+
+            [Fact]
+            public void TheResponseContentShouldContainTheODataContext()
+            {
+                var responseContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
+
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers/Name"), responseContent.Context);
+            }
+
+            [Fact]
+            public void TheResponseContentShouldContainThePropertyValue()
+            {
+                var responseContent = (ODataResponseContent)((ObjectContent)this.response.Content).Value;
+
+                Assert.Equal("Bob", responseContent.Value);
+            }
+        }
+
+        public class WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsInvalid
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly string propertyName = "Foo";
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsInvalid()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(null));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)/Foo/$value");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.GetPropertyValue(this.identifier, propertyName).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldContainTheErrorMessage()
+            {
+                Assert.Equal("{\"error\":{\"code\":\"\",\"message\":\"The type 'MicroLite.Extensions.WebApi.Tests.OData.TestEntities.Customer' does not contain a property named 'Foo'.\"}}", Newtonsoft.Json.JsonConvert.SerializeObject(((ObjectContent)this.response.Content).Value));
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeBadRequest()
+            {
+                Assert.Equal(HttpStatusCode.BadRequest, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsValid
+        {
+            private readonly CustomerController controller;
+            private readonly ExpandoObject entity = new ExpandoObject();
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly string propertyName = "Name";
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsValid()
+            {
+                TestHelper.EnsureEDM();
+
+                ((IDictionary<string, object>)this.entity)["Name"] = "Bob";
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(entity));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)/Name");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.GetPropertyValue(this.identifier, this.propertyName).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeOK()
+            {
+                Assert.Equal(HttpStatusCode.OK, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+
+            [Fact]
+            public void TheResponseContent_IsStringContent()
+            {
+                Assert.IsType<StringContent>(this.response.Content);
+                Assert.Equal("Bob", ((StringContent)this.response.Content).ReadAsStringAsync().Result);
+            }
+        }
+
+        public class WhenCalling_GetEntityResponseAsync_EntityKey_AndAnEntityIsNotReturned
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityResponseAsync_EntityKey_AndAnEntityIsNotReturned()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(null));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Get(this.identifier).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNotFound()
+            {
+                Assert.Equal(HttpStatusCode.NotFound, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldNotContainAnyContent()
+            {
+                Assert.Null(this.response.Content);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_GetEntityResponseAsync_EntityKey_AndAnEntityIsReturned
+        {
+            private readonly CustomerController controller;
+            private readonly ExpandoObject entity = new ExpandoObject();
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityResponseAsync_EntityKey_AndAnEntityIsReturned()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(entity));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Get(this.identifier).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldContainTheEntity()
+            {
+                Assert.Equal(this.entity, ((ObjectContent)this.response.Content).Value);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeOK()
+            {
+                Assert.Equal(HttpStatusCode.OK, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+
+            [Fact]
+            public void TheResponseContentShouldContainTheODataContext()
+            {
+                var responseContent = (IDictionary<string, object>)this.entity;
+
+                Assert.True(responseContent.ContainsKey("@odata.context"));
+                Assert.Equal(new Uri("http://services.microlite.org/odata/$metadata#Customers/$entity"), responseContent["@odata.context"]);
+            }
+        }
+
+        public class WhenCalling_PostEntityResponseAsync
+        {
+            private readonly CustomerController controller;
+            private readonly Customer customer = new Customer();
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_PostEntityResponseAsync()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.InsertAsync(It.IsNotNull<Customer>()))
+                    .Returns(System.Threading.Tasks.Task.FromResult(0))
+                    .Callback((object o) =>
+                    {
+                        ((Customer)o).Id = this.identifier;
+                    });
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Post, "http://services.microlite.org/odata/Customers");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Post(this.customer).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldContainTheEntity()
+            {
+                Assert.Equal(this.customer, ((ObjectContent)this.response.Content).Value);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldContainTheUriForTheEntity()
+            {
+                Assert.Equal(new Uri("http://services.microlite.org/odata/Customers(12345)"), this.response.Headers.Location);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeCreated()
+            {
+                Assert.Equal(HttpStatusCode.Created, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_PutEntityResponseAsync_AndAnEntityIsNotReturned
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_PutEntityResponseAsync_AndAnEntityIsNotReturned()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<Customer>(this.identifier)).Returns(System.Threading.Tasks.Task.FromResult((Customer)null));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Put, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Put(this.identifier, new Customer()).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNotFound()
+            {
+                Assert.Equal(HttpStatusCode.NotFound, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldNotContainAnyContent()
+            {
+                Assert.Null(this.response.Content);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_PutEntityResponseAsync_AndAnEntityIsNotUpdated
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_PutEntityResponseAsync_AndAnEntityIsNotUpdated()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<Customer>(this.identifier)).Returns(System.Threading.Tasks.Task.FromResult(new Customer()));
+                this.mockSession.Setup(x => x.UpdateAsync(It.IsNotNull<Customer>())).Returns(System.Threading.Tasks.Task.FromResult(false));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Put, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Put(this.identifier, new Customer()).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNotModified()
+            {
+                Assert.Equal(HttpStatusCode.NotModified, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldNotContainAnyContent()
+            {
+                Assert.Null(this.response.Content);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
+        public class WhenCalling_PutEntityResponseAsync_AndAnEntityIsUpdated
+        {
+            private readonly CustomerController controller;
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly HttpResponseMessage response;
+
+            private readonly Customer updatedCustomer = new Customer
+            {
+                Name = "Joe Bloggs"
+            };
+
+            public WhenCalling_PutEntityResponseAsync_AndAnEntityIsUpdated()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<Customer>(this.identifier)).Returns(System.Threading.Tasks.Task.FromResult(new Customer()));
+                this.mockSession.Setup(x => x.UpdateAsync(It.IsNotNull<Customer>())).Returns(System.Threading.Tasks.Task.FromResult(true));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Put, "http://services.microlite.org/odata/Customers(12345)");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.Put(this.identifier, this.updatedCustomer).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNoContent()
+            {
+                Assert.Equal(HttpStatusCode.NoContent, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldNotContainAnyContent()
+            {
+                Assert.Null(this.response.Content);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+
+            [Fact]
+            public void TheUpdatedCustomerShouldHaveTheIdentifierSet()
+            {
+                Assert.Equal(this.identifier, this.updatedCustomer.Id);
             }
         }
 
@@ -1002,10 +1547,6 @@
             public CustomerController(IAsyncSession session)
                 : base(session)
             {
-                this.GetEntityResourceUri = (int id) =>
-                {
-                    return new Uri("http://services.microlite.org/odata/Customers/" + id.ToString());
-                };
             }
 
             public new ODataValidationSettings ValidationSettings => base.ValidationSettings;
@@ -1013,8 +1554,26 @@
             public System.Threading.Tasks.Task<HttpResponseMessage> Count()
                 => this.GetCountResponseAsync();
 
+            public System.Threading.Tasks.Task<HttpResponseMessage> Delete(int entityKey)
+                => this.DeleteEntityResponseAsync(entityKey);
+
+            public System.Threading.Tasks.Task<HttpResponseMessage> Get(int entityKey)
+                => this.GetEntityResponseAsync(entityKey);
+
             public System.Threading.Tasks.Task<HttpResponseMessage> Get(ODataQueryOptions queryOptions)
                 => this.GetEntityResponseAsync(queryOptions);
+
+            public System.Threading.Tasks.Task<HttpResponseMessage> GetProperty(int entityKey, string propertyName)
+                => this.GetEntityPropertyResponseAsync(entityKey, propertyName);
+
+            public System.Threading.Tasks.Task<HttpResponseMessage> GetPropertyValue(int entityKey, string propertyName)
+                => this.GetEntityPropertyValueResponseAsync(entityKey, propertyName);
+
+            public System.Threading.Tasks.Task<HttpResponseMessage> Post(Customer entity)
+                => this.PostEntityResponseAsync(entity);
+
+            public System.Threading.Tasks.Task<HttpResponseMessage> Put(int entityKey, Customer entity)
+                => this.PutEntityResponseAsync(entityKey, entity);
         }
     }
 }
