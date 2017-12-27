@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroLite.Extensions.WebApi.OData", "MicroLite.Extensions.WebApi.OData\MicroLite.Extensions.WebApi.OData.csproj", "{05E061CC-54D7-4B30-B933-F8F54D18BA0B}"
 EndProject
