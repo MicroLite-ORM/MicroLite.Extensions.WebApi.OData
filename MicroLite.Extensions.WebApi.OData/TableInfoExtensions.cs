@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="TableInfoExtensions.cs" company="MicroLite">
+// <copyright file="TableInfoExtensions.cs" company="Project Contributors">
 // Copyright 2012 - 2017 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

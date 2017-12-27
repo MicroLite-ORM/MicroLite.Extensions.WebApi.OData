@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="MicroLiteODataApiController{T}.cs" company="MicroLite">
+// <copyright file="MicroLiteODataApiController{TEntity,TEntityKey}.cs" company="Project Contributors">
 // Copyright 2012 - 2017 Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,7 +71,7 @@ namespace MicroLite.Extensions.WebApi.OData
                     | AllowedQueryOptions.Select
                     | AllowedQueryOptions.Skip
                     | AllowedQueryOptions.Top,
-                MaxTop = 50
+                MaxTop = 50,
             };
         }
 
@@ -98,8 +98,8 @@ namespace MicroLite.Extensions.WebApi.OData
             if (entityCountQuery == null)
             {
                 entityCountQuery = SqlBuilder.Select()
-                    .Count(ObjectInfo.TableInfo.IdentifierColumn.ColumnName)
-                    .From(ObjectInfo.ForType)
+                    .Count(this.ObjectInfo.TableInfo.IdentifierColumn.ColumnName)
+                    .From(this.ObjectInfo.ForType)
                     .ToSqlQuery();
             }
 
@@ -117,21 +117,24 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <summary>
         /// Creates the SQL query to select an entity in the Entity Set based upon it's Entity Key.
         /// </summary>
+        /// <param name="entityKey">The entity key.</param>
         /// <returns>The SqlQuery to execute.</returns>
         protected virtual SqlQuery CreateSelectEntityByKeySqlQuery(TEntityKey entityKey)
             => SqlBuilder.Select("*")
-                 .From(ObjectInfo.ForType)
-                 .Where(ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
+                 .From(this.ObjectInfo.ForType)
+                 .Where(this.ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
                  .ToSqlQuery();
 
         /// <summary>
         /// Creates the SQL query to select an individual property from an entity in the Entity Set based upon it's Entity Key.
         /// </summary>
+        /// <param name="columnInfo">The column info.</param>
+        /// <param name="entityKey">The entity key.</param>
         /// <returns>The SqlQuery to execute.</returns>
         protected virtual SqlQuery CreateSelectPropertySqlQuery(ColumnInfo columnInfo, TEntityKey entityKey)
             => SqlBuilder.Select(columnInfo.ColumnName)
-                .From(ObjectInfo.ForType)
-                .Where(ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
+                .From(this.ObjectInfo.ForType)
+                .Where(this.ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
                 .ToSqlQuery();
 
         /// <summary>
@@ -181,7 +184,7 @@ namespace MicroLite.Extensions.WebApi.OData
                 return this.Request.CreateODataErrorResponse(HttpStatusCode.BadRequest, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.");
             }
 
-            var sqlQuery = CreateSelectPropertySqlQuery(columnInfo, entityKey);
+            var sqlQuery = this.CreateSelectPropertySqlQuery(columnInfo, entityKey);
 
             var result = await this.Session.SingleAsync<dynamic>(sqlQuery);
             var value = ((IDictionary<string, object>)result)[columnInfo.ColumnName];
@@ -208,7 +211,7 @@ namespace MicroLite.Extensions.WebApi.OData
                 return this.Request.CreateODataErrorResponse(HttpStatusCode.BadRequest, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.");
             }
 
-            var sqlQuery = CreateSelectPropertySqlQuery(columnInfo, entityKey);
+            var sqlQuery = this.CreateSelectPropertySqlQuery(columnInfo, entityKey);
 
             var result = await this.Session.SingleAsync<dynamic>(sqlQuery);
             var value = ((IDictionary<string, object>)result)[columnInfo.ColumnName]?.ToString();
