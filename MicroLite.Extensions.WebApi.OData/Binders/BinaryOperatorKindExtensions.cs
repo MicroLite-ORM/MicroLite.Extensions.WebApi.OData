@@ -13,56 +13,38 @@
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
     using System;
+    using System.Collections.Generic;
     using Net.Http.WebApi.OData.Query.Expressions;
 
     internal static class BinaryOperatorKindExtensions
     {
+        private static Dictionary<BinaryOperatorKind, string> operatorKindMap = new Dictionary<BinaryOperatorKind, string>
+        {
+            [BinaryOperatorKind.Add] = "+",
+            [BinaryOperatorKind.And] = "AND",
+            [BinaryOperatorKind.Divide] = "/",
+            [BinaryOperatorKind.Equal] = "=",
+            [BinaryOperatorKind.GreaterThan] = ">",
+            [BinaryOperatorKind.GreaterThanOrEqual] = ">=",
+            [BinaryOperatorKind.LessThan] = "<",
+            [BinaryOperatorKind.LessThanOrEqual] = "<=",
+            [BinaryOperatorKind.Modulo] = "%",
+            [BinaryOperatorKind.Multiply] = "*",
+            [BinaryOperatorKind.NotEqual] = "<>",
+            [BinaryOperatorKind.Or] = "OR",
+            [BinaryOperatorKind.Subtract] = "-",
+        };
+
         internal static string ToSqlOperator(this BinaryOperatorKind binaryOperatorKind)
         {
-            switch (binaryOperatorKind)
+            string sqlOperator;
+
+            if (operatorKindMap.TryGetValue(binaryOperatorKind, out sqlOperator))
             {
-                case BinaryOperatorKind.Add:
-                    return "+";
-
-                case BinaryOperatorKind.And:
-                    return "AND";
-
-                case BinaryOperatorKind.Divide:
-                    return "/";
-
-                case BinaryOperatorKind.Equal:
-                    return "=";
-
-                case BinaryOperatorKind.GreaterThan:
-                    return ">";
-
-                case BinaryOperatorKind.GreaterThanOrEqual:
-                    return ">=";
-
-                case BinaryOperatorKind.LessThan:
-                    return "<";
-
-                case BinaryOperatorKind.LessThanOrEqual:
-                    return "<=";
-
-                case BinaryOperatorKind.Modulo:
-                    return "%";
-
-                case BinaryOperatorKind.Multiply:
-                    return "*";
-
-                case BinaryOperatorKind.NotEqual:
-                    return "<>";
-
-                case BinaryOperatorKind.Or:
-                    return "OR";
-
-                case BinaryOperatorKind.Subtract:
-                    return "-";
-
-                default:
-                    throw new NotImplementedException($"The operator '{binaryOperatorKind}' is not implemented by this service");
+                return sqlOperator;
             }
+
+            throw new NotImplementedException($"The operator '{binaryOperatorKind}' is not implemented by this service");
         }
     }
 }
