@@ -524,6 +524,43 @@
             }
         }
 
+        public class WhenCalling_GetEntityPropertyResponseAsync_AndThePropertyNameIsValidButNoResults
+        {
+            private readonly CustomerController controller;
+            private readonly ExpandoObject entity = new ExpandoObject();
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly string propertyName = "Name";
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityPropertyResponseAsync_AndThePropertyNameIsValidButNoResults()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(null));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)/Name");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.GetProperty(this.identifier, this.propertyName).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNotFound()
+            {
+                Assert.Equal(HttpStatusCode.NotFound, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
+            }
+        }
+
         public class WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsInvalid
         {
             private readonly CustomerController controller;
@@ -609,6 +646,43 @@
             {
                 Assert.IsType<StringContent>(this.response.Content);
                 Assert.Equal("Bob", ((StringContent)this.response.Content).ReadAsStringAsync().Result);
+            }
+        }
+
+        public class WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsValidButNoResults
+        {
+            private readonly CustomerController controller;
+            private readonly ExpandoObject entity = new ExpandoObject();
+            private readonly int identifier = 12345;
+            private readonly Mock<IAsyncSession> mockSession = new Mock<IAsyncSession>();
+            private readonly string propertyName = "Name";
+            private readonly HttpResponseMessage response;
+
+            public WhenCalling_GetEntityPropertyValueResponseAsync_AndThePropertyNameIsValidButNoResults()
+            {
+                TestHelper.EnsureEDM();
+
+                this.mockSession.Setup(x => x.SingleAsync<dynamic>(It.IsAny<SqlQuery>())).Returns(System.Threading.Tasks.Task.FromResult<dynamic>(null));
+
+                this.controller = new CustomerController(this.mockSession.Object);
+                this.controller.Request = new HttpRequestMessage(
+                    HttpMethod.Get, "http://services.microlite.org/odata/Customers(12345)/Name");
+                this.controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+
+                this.response = this.controller.GetPropertyValue(this.identifier, this.propertyName).Result;
+            }
+
+            [Fact]
+            public void TheHttpResponseMessageShouldHaveHttpStatusCodeNotFound()
+            {
+                Assert.Equal(HttpStatusCode.NotFound, this.response.StatusCode);
+            }
+
+            [Fact]
+            public void TheODataVersionHeaderIsSet()
+            {
+                Assert.True(response.Headers.Contains("OData-Version"));
+                Assert.Equal("4.0", response.Headers.GetValues("OData-Version").Single());
             }
         }
 

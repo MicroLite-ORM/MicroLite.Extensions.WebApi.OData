@@ -187,6 +187,12 @@ namespace MicroLite.Extensions.WebApi.OData
             var sqlQuery = this.CreateSelectPropertySqlQuery(columnInfo, entityKey);
 
             var result = await this.Session.SingleAsync<dynamic>(sqlQuery);
+
+            if (result == null)
+            {
+                return this.Request.CreateODataResponse(HttpStatusCode.NotFound, null);
+            }
+
             var value = ((IDictionary<string, object>)result)[columnInfo.ColumnName];
 
             Uri context = this.Request.ResolveODataContextUri(entitySet, entityKey, propertyName);
@@ -214,6 +220,12 @@ namespace MicroLite.Extensions.WebApi.OData
             var sqlQuery = this.CreateSelectPropertySqlQuery(columnInfo, entityKey);
 
             var result = await this.Session.SingleAsync<dynamic>(sqlQuery);
+
+            if (result == null)
+            {
+                return this.Request.CreateODataResponse(HttpStatusCode.NotFound, null);
+            }
+
             var value = ((IDictionary<string, object>)result)[columnInfo.ColumnName]?.ToString();
 
             return this.Request.CreateODataResponse(value);
