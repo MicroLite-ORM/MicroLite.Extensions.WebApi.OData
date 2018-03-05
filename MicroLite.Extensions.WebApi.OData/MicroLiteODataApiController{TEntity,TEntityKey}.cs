@@ -283,7 +283,7 @@ namespace MicroLite.Extensions.WebApi.OData
 
             var paged = await this.Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top));
 
-            Uri context = this.Request.ResolveODataContextUri(queryOptions.EntitySet);
+            Uri context = this.Request.ResolveODataContextUri(queryOptions.EntitySet, queryOptions.Select);
             int? count = queryOptions.Count ? paged.TotalResults : default(int?);
             Uri nextLink = paged.MoreResultsAvailable ? queryOptions.NextLink(skip, paged.ResultsPerPage) : null;
 

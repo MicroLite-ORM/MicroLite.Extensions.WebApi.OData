@@ -1,5 +1,6 @@
 ﻿namespace MicroLite.Extensions.WebApi.Tests.OData
 {
+    using System.Web.Http;
     using Net.Http.WebApi.OData.Model;
     using TestEntities;
 
@@ -9,11 +10,12 @@
         {
             if (EntityDataModel.Current == null)
             {
-                var entityDataModelBuilder = new EntityDataModelBuilder();
-                entityDataModelBuilder.RegisterEntitySet<Customer>("Customers", x => x.Id);
-                entityDataModelBuilder.RegisterEntitySet<Invoice>("Invoices", x => x.Id);
-
-                entityDataModelBuilder.BuildModel();
+                var httpConfiguration = new HttpConfiguration();
+                httpConfiguration.UseOData(entityDataModelBuilder =>
+                {
+                    entityDataModelBuilder.RegisterEntitySet<Customer>("Customers", x => x.Id);
+                    entityDataModelBuilder.RegisterEntitySet<Invoice>("Invoices", x => x.Id);
+                });
             }
         }
     }
