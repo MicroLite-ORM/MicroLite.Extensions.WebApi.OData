@@ -17,7 +17,7 @@ The NuGet Package contains binaries compiled against:
 
 ## Supported ASP.NET WebApi Versions
 
-* ASP.NET WebApi 5.2.3
+* ASP.NET WebApi 5.2.4
 
 ## Supported OData Versions
 
