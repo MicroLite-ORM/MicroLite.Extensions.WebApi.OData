@@ -1,11 +1,13 @@
 ﻿namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
 {
     using System;
+    using System.Net;
     using System.Net.Http;
     using MicroLite.Builder;
     using MicroLite.Extensions.WebApi.OData.Binders;
     using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
     using MicroLite.Mapping;
+    using Net.Http.WebApi.OData;
     using Net.Http.WebApi.OData.Model;
     using Net.Http.WebApi.OData.Query;
     using Xunit;
@@ -13,7 +15,7 @@
     public class FilterBinderTests
     {
         [Fact]
-        public void BindFilterThrowsNotImplementedExceptionForUnspportedFunctionName()
+        public void BindFilterThrowsODataExceptionForUnspportedFunctionName()
         {
             TestHelper.EnsureEDM();
 
@@ -21,8 +23,9 @@
                 new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=indexof(Name, 'ayes') eq 1"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
-            var exception = Assert.Throws<NotImplementedException>(() => FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))));
+            var exception = Assert.Throws<ODataException>(() => FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))));
 
+            Assert.Equal(HttpStatusCode.NotImplemented, exception.StatusCode);
             Assert.Equal("The function 'indexof' is not implemented by this service", exception.Message);
         }
 

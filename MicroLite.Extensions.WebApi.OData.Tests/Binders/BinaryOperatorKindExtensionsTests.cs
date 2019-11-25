@@ -1,7 +1,8 @@
 ﻿namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
 {
-    using System;
+    using System.Net;
     using MicroLite.Extensions.WebApi.OData.Binders;
+    using Net.Http.WebApi.OData;
     using Net.Http.WebApi.OData.Query.Expressions;
     using Xunit;
 
@@ -86,10 +87,11 @@
         }
 
         [Fact]
-        public void ToSqlOperatorThrowsNotImplementedExceptionForBinaryOperatorKindNone()
+        public void ToSqlOperatorThrowsODataExceptionForBinaryOperatorKindNone()
         {
-            var exception = Assert.Throws<NotImplementedException>(() => BinaryOperatorKind.None.ToSqlOperator());
+            var exception = Assert.Throws<ODataException>(() => BinaryOperatorKind.None.ToSqlOperator());
 
+            Assert.Equal(HttpStatusCode.NotImplemented, exception.StatusCode);
             Assert.Equal("The operator 'None' is not implemented by this service", exception.Message);
         }
     }

@@ -13,10 +13,12 @@
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
     using System;
+    using System.Net;
     using Builder;
     using Builder.Syntax.Read;
     using Characters;
     using Mapping;
+    using Net.Http.WebApi.OData;
     using Net.Http.WebApi.OData.Model;
     using Net.Http.WebApi.OData.Query;
     using Net.Http.WebApi.OData.Query.Binders;
@@ -45,12 +47,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <returns>The SqlBuilder after the where clause has been added.</returns>
         public static IOrderBy BindFilter(FilterQueryOption filterQueryOption, IObjectInfo objectInfo, IWhereOrOrderBy whereSqlBuilder)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
                 throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (whereSqlBuilder == null)
+            if (whereSqlBuilder is null)
             {
                 throw new ArgumentNullException(nameof(whereSqlBuilder));
             }
@@ -71,7 +73,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="binaryOperatorNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" /> to bind.</param>
         protected override void Bind(BinaryOperatorNode binaryOperatorNode)
         {
-            if (binaryOperatorNode == null)
+            if (binaryOperatorNode is null)
             {
                 throw new ArgumentNullException(nameof(binaryOperatorNode));
             }
@@ -87,7 +89,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 && ((ConstantNode)binaryOperatorNode.Right).EdmType == EdmPrimitiveType.Boolean))
             {
                 if (binaryOperatorNode.Right.Kind == QueryNodeKind.Constant
-                    && ((ConstantNode)binaryOperatorNode.Right).EdmType == null)
+                    && ((ConstantNode)binaryOperatorNode.Right).EdmType is null)
                 {
                     if (binaryOperatorNode.OperatorKind == BinaryOperatorKind.Equal)
                     {
@@ -115,12 +117,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="constantNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.ConstantNode" /> to bind.</param>
         protected override void Bind(ConstantNode constantNode)
         {
-            if (constantNode == null)
+            if (constantNode is null)
             {
                 throw new ArgumentNullException(nameof(constantNode));
             }
 
-            if (constantNode.EdmType == null)
+            if (constantNode.EdmType is null)
             {
                 this.predicateBuilder.Append("NULL");
             }
@@ -136,7 +138,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="functionCallNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" /> to bind.</param>
         protected override void Bind(FunctionCallNode functionCallNode)
         {
-            if (functionCallNode == null)
+            if (functionCallNode is null)
             {
                 throw new ArgumentNullException(nameof(functionCallNode));
             }
@@ -202,7 +204,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     break;
 
                 default:
-                    throw new NotImplementedException($"The function '{functionCallNode.Name}' is not implemented by this service");
+                    throw new ODataException(HttpStatusCode.NotImplemented, $"The function '{functionCallNode.Name}' is not implemented by this service");
             }
         }
 
@@ -212,16 +214,16 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="propertyAccessNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" /> to bind.</param>
         protected override void Bind(PropertyAccessNode propertyAccessNode)
         {
-            if (propertyAccessNode == null)
+            if (propertyAccessNode is null)
             {
                 throw new ArgumentNullException(nameof(propertyAccessNode));
             }
 
             var column = this.objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.Property.Name);
 
-            if (column == null)
+            if (column is null)
             {
-                throw new InvalidOperationException($"The type '{this.objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.Property.Name}'");
+                throw new ODataException(HttpStatusCode.BadRequest, $"The type '{this.objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.Property.Name}'");
             }
 
             this.predicateBuilder.Append(column.ColumnName);
@@ -233,7 +235,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="unaryOperatorNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" /> to bind.</param>
         protected override void Bind(UnaryOperatorNode unaryOperatorNode)
         {
-            if (unaryOperatorNode == null)
+            if (unaryOperatorNode is null)
             {
                 throw new ArgumentNullException(nameof(unaryOperatorNode));
             }

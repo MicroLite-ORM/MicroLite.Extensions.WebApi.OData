@@ -12,8 +12,9 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
-    using System;
     using System.Collections.Generic;
+    using System.Net;
+    using Net.Http.WebApi.OData;
     using Net.Http.WebApi.OData.Query.Expressions;
 
     internal static class BinaryOperatorKindExtensions
@@ -37,14 +38,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
         internal static string ToSqlOperator(this BinaryOperatorKind binaryOperatorKind)
         {
-            string sqlOperator;
-
-            if (operatorKindMap.TryGetValue(binaryOperatorKind, out sqlOperator))
+            if (operatorKindMap.TryGetValue(binaryOperatorKind, out string sqlOperator))
             {
                 return sqlOperator;
             }
 
-            throw new NotImplementedException($"The operator '{binaryOperatorKind}' is not implemented by this service");
+            throw new ODataException(HttpStatusCode.NotImplemented, $"The operator '{binaryOperatorKind}' is not implemented by this service");
         }
     }
 }
