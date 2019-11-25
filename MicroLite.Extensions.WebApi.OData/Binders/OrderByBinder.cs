@@ -41,12 +41,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <returns>The SqlBuilder after the order by clause has been added.</returns>
         public static IOrderBy BindOrderBy(OrderByQueryOption orderByQueryOption, IObjectInfo objectInfo, IOrderBy orderBySqlBuilder)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
                 throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (orderBySqlBuilder == null)
+            if (orderBySqlBuilder is null)
             {
                 throw new ArgumentNullException(nameof(orderBySqlBuilder));
             }
@@ -70,22 +70,20 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="orderByProperty">The <see cref="T:Net.Http.WebApi.OData.Query.OrderByProperty" /> to bind.</param>
         protected override void Bind(OrderByProperty orderByProperty)
         {
-            if (orderByProperty == null)
+            if (orderByProperty is null)
             {
                 throw new ArgumentNullException(nameof(orderByProperty));
             }
 
             var column = this.objectInfo.TableInfo.GetColumnInfoForProperty(orderByProperty.Property.Name);
 
-            var columnName = column.ColumnName;
-
             if (orderByProperty.Direction == OrderByDirection.Ascending)
             {
-                this.orderBySqlBuilder.OrderByAscending(columnName);
+                this.orderBySqlBuilder.OrderByAscending(column.ColumnName);
             }
             else
             {
-                this.orderBySqlBuilder.OrderByDescending(columnName);
+                this.orderBySqlBuilder.OrderByDescending(column.ColumnName);
             }
         }
     }

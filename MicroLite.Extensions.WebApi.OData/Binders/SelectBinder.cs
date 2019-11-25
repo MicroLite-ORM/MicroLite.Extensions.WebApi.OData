@@ -43,12 +43,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <returns>The SqlBuilder after the select and from clauses have been added.</returns>
         public static IWhereOrOrderBy BindSelect(SelectExpandQueryOption selectQueryOption, IObjectInfo objectInfo)
         {
-            if (objectInfo == null)
+            if (objectInfo is null)
             {
                 throw new ArgumentNullException(nameof(objectInfo));
             }
 
-            if (selectQueryOption == null)
+            if (selectQueryOption is null)
             {
                 return SqlBuilder.Select("*").From(objectInfo.ForType);
             }
@@ -67,7 +67,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         /// <param name="edmProperty">The <see cref="T:Net.Http.WebApi.OData.Model.EdmProperty" /> to bind.</param>
         protected override void Bind(EdmProperty edmProperty)
         {
-            if (edmProperty == null)
+            if (edmProperty is null)
             {
                 throw new ArgumentNullException(nameof(edmProperty));
             }

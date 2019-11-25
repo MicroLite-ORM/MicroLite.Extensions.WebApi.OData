@@ -8,7 +8,7 @@
     {
         internal static void EnsureEDM()
         {
-            if (EntityDataModel.Current == null)
+            if (EntityDataModel.Current is null)
             {
                 var httpConfiguration = new HttpConfiguration();
                 httpConfiguration.UseOData(entityDataModelBuilder =>
