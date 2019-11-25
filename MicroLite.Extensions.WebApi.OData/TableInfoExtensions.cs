@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Extensions.WebApi.OData
 {
+    using System;
     using MicroLite.Mapping;
 
     internal static class TableInfoExtensions
@@ -22,7 +23,7 @@ namespace MicroLite.Extensions.WebApi.OData
             {
                 var column = tableInfo.Columns[i];
 
-                if (column.PropertyInfo.Name == propertyName)
+                if (column.PropertyInfo.Name.Equals(propertyName, StringComparison.Ordinal))
                 {
                     return column;
                 }
