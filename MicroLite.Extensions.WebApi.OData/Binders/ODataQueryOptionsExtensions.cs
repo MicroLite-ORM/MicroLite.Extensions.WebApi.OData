@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
-    using Mapping;
+    using MicroLite.Mapping;
     using Net.Http.WebApi.OData.Query;
 
     internal static class ODataQueryOptionsExtensions

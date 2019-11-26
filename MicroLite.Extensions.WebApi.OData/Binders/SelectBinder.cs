@@ -13,9 +13,9 @@
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
     using System;
-    using Builder;
-    using Builder.Syntax.Read;
-    using Mapping;
+    using MicroLite.Builder;
+    using MicroLite.Builder.Syntax.Read;
+    using MicroLite.Mapping;
     using Net.Http.WebApi.OData.Model;
     using Net.Http.WebApi.OData.Query;
     using Net.Http.WebApi.OData.Query.Binders;
@@ -62,9 +62,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Model.EdmProperty" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Model.EdmProperty" />.
         /// </summary>
-        /// <param name="edmProperty">The <see cref="T:Net.Http.WebApi.OData.Model.EdmProperty" /> to bind.</param>
+        /// <param name="edmProperty">The <see cref="Net.Http.WebApi.OData.Model.EdmProperty" /> to bind.</param>
         protected override void Bind(EdmProperty edmProperty)
         {
             if (edmProperty is null)

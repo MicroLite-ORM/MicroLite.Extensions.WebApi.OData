@@ -14,10 +14,10 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 {
     using System;
     using System.Net;
-    using Builder;
-    using Builder.Syntax.Read;
-    using Characters;
-    using Mapping;
+    using MicroLite.Builder;
+    using MicroLite.Builder.Syntax.Read;
+    using MicroLite.Characters;
+    using MicroLite.Mapping;
     using Net.Http.WebApi.OData;
     using Net.Http.WebApi.OData.Model;
     using Net.Http.WebApi.OData.Query;
@@ -68,9 +68,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" />.
         /// </summary>
-        /// <param name="binaryOperatorNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" /> to bind.</param>
+        /// <param name="binaryOperatorNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" /> to bind.</param>
         protected override void Bind(BinaryOperatorNode binaryOperatorNode)
         {
             if (binaryOperatorNode is null)
@@ -112,9 +112,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Query.Expressions.ConstantNode" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.ConstantNode" />.
         /// </summary>
-        /// <param name="constantNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.ConstantNode" /> to bind.</param>
+        /// <param name="constantNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.ConstantNode" /> to bind.</param>
         protected override void Bind(ConstantNode constantNode)
         {
             if (constantNode is null)
@@ -133,9 +133,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" />.
         /// </summary>
-        /// <param name="functionCallNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" /> to bind.</param>
+        /// <param name="functionCallNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" /> to bind.</param>
         protected override void Bind(FunctionCallNode functionCallNode)
         {
             if (functionCallNode is null)
@@ -209,9 +209,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" />.
         /// </summary>
-        /// <param name="propertyAccessNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" /> to bind.</param>
+        /// <param name="propertyAccessNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" /> to bind.</param>
         protected override void Bind(PropertyAccessNode propertyAccessNode)
         {
             if (propertyAccessNode is null)
@@ -230,9 +230,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" />.
         /// </summary>
-        /// <param name="unaryOperatorNode">The <see cref="T:Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" /> to bind.</param>
+        /// <param name="unaryOperatorNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" /> to bind.</param>
         protected override void Bind(UnaryOperatorNode unaryOperatorNode)
         {
             if (unaryOperatorNode is null)

@@ -13,8 +13,8 @@
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
     using System;
-    using Builder.Syntax.Read;
-    using Mapping;
+    using MicroLite.Builder.Syntax.Read;
+    using MicroLite.Mapping;
     using Net.Http.WebApi.OData.Query;
     using Net.Http.WebApi.OData.Query.Binders;
 
@@ -65,9 +65,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="T:Net.Http.WebApi.OData.Query.OrderByProperty" />.
+        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.OrderByProperty" />.
         /// </summary>
-        /// <param name="orderByProperty">The <see cref="T:Net.Http.WebApi.OData.Query.OrderByProperty" /> to bind.</param>
+        /// <param name="orderByProperty">The <see cref="Net.Http.WebApi.OData.Query.OrderByProperty" /> to bind.</param>
         protected override void Bind(OrderByProperty orderByProperty)
         {
             if (orderByProperty is null)
