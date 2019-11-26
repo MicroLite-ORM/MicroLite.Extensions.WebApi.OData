@@ -98,7 +98,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=(endswith(Name, 'son') and endswith(Name, 'nes')))"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=(endswith(Name, 'son') and endswith(Name, 'nes'))"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
@@ -144,7 +144,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=(endswith(Name, 'son') or endswith(Name, 'nes')))"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=(endswith(Name, 'son') or endswith(Name, 'nes'))"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
@@ -1500,7 +1500,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity add 10 eq 15'"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity add 10 eq 15"),
                     EntityDataModel.Current.EntitySets["Invoices"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
@@ -1546,7 +1546,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity div 10 eq 15'"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity div 10 eq 15"),
                     EntityDataModel.Current.EntitySets["Invoices"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
@@ -1592,7 +1592,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity mod 10 eq 15'"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity mod 10 eq 15"),
                     EntityDataModel.Current.EntitySets["Invoices"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
@@ -1638,7 +1638,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity mul 10 eq 15'"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity mul 10 eq 15"),
                     EntityDataModel.Current.EntitySets["Invoices"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
@@ -1684,7 +1684,7 @@
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity sub 10 eq 15'"),
+                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity sub 10 eq 15"),
                     EntityDataModel.Current.EntitySets["Invoices"]);
 
                 this.sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
