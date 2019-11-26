@@ -19,7 +19,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
     internal static class BinaryOperatorKindExtensions
     {
-        private static Dictionary<BinaryOperatorKind, string> operatorKindMap = new Dictionary<BinaryOperatorKind, string>
+        private static readonly Dictionary<BinaryOperatorKind, string> OperatorKindMap = new Dictionary<BinaryOperatorKind, string>
         {
             [BinaryOperatorKind.Add] = "+",
             [BinaryOperatorKind.And] = "AND",
@@ -38,7 +38,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
         internal static string ToSqlOperator(this BinaryOperatorKind binaryOperatorKind)
         {
-            if (operatorKindMap.TryGetValue(binaryOperatorKind, out string sqlOperator))
+            if (OperatorKindMap.TryGetValue(binaryOperatorKind, out string sqlOperator))
             {
                 return sqlOperator;
             }
