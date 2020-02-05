@@ -14,6 +14,7 @@ namespace MicroLite.Extensions.WebApi.OData
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -174,7 +175,7 @@ namespace MicroLite.Extensions.WebApi.OData
 
             var count = await this.Session.Advanced.ExecuteScalarAsync<long>(sqlQuery).ConfigureAwait(false);
 
-            return this.Request.CreateODataResponse(count.ToString());
+            return this.Request.CreateODataResponse(count.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
