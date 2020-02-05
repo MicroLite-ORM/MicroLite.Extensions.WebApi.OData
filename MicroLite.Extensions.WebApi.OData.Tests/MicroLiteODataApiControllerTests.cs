@@ -218,7 +218,7 @@
             [Fact]
             public void TopQueryOptionIsAllowed()
             {
-                Assert.Equal(controller.ValidationSettings.AllowedQueryOptions & AllowedQueryOptions.Top, AllowedQueryOptions.Top);
+                Assert.Equal(AllowedQueryOptions.Top, controller.ValidationSettings.AllowedQueryOptions & AllowedQueryOptions.Top);
             }
 
             [Fact]
