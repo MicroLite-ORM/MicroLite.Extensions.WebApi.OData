@@ -64,10 +64,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
             return orderBySqlBuilder;
         }
 
-        /// <summary>
-        /// Binds the specified <see cref="OrderByProperty" />.
-        /// </summary>
-        /// <param name="orderByProperty">The <see cref="OrderByProperty" /> to bind.</param>
+        /// <inheritdoc/>
         protected override void Bind(OrderByProperty orderByProperty)
         {
             if (orderByProperty is null)

@@ -61,10 +61,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
             return SqlBuilder.Select(columnNames).From(objectInfo.ForType);
         }
 
-        /// <summary>
-        /// Binds the specified <see cref="EdmProperty" />.
-        /// </summary>
-        /// <param name="edmProperty">The <see cref="EdmProperty" /> to bind.</param>
+        /// <inheritdoc/>
         protected override void Bind(EdmProperty edmProperty)
         {
             if (edmProperty is null)
