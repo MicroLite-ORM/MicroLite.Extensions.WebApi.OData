@@ -100,7 +100,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 }
                 else
                 {
-                    _predicateBuilder.Append(" " + binaryOperatorNode.OperatorKind.ToSqlOperator() + " ");
+                    _predicateBuilder.Append(" ").Append(binaryOperatorNode.OperatorKind.ToSqlOperator()).Append(" ");
                 }
 
                 Bind(binaryOperatorNode.Right);
@@ -153,7 +153,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                         ? functionCallNode.Name.Substring(2)
                         : functionCallNode.Name;
 
-                    _predicateBuilder.Append(name.ToUpperInvariant() + "(");
+                    _predicateBuilder.Append(name.ToUpperInvariant()).Append("(");
 
                     for (int i = 0; i < parameters.Count; i++)
                     {
@@ -170,16 +170,14 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
                 case "endswith":
                     Bind(parameters[0]);
-                    _predicateBuilder.Append(
-                        " LIKE " + _sqlCharacters.GetParameterName(0),
-                        _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value);
+                    _predicateBuilder.Append(" LIKE ")
+                        .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value);
                     break;
 
                 case "startswith":
                     Bind(parameters[0]);
-                    _predicateBuilder.Append(
-                        " LIKE " + _sqlCharacters.GetParameterName(0),
-                        ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
+                    _predicateBuilder.Append(" LIKE ")
+                        .Append(_sqlCharacters.GetParameterName(0), ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
                     break;
 
                 case "trim":
@@ -190,9 +188,8 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
                 case "contains":
                     Bind(parameters[0]);
-                    _predicateBuilder.Append(
-                        " LIKE " + _sqlCharacters.GetParameterName(0),
-                        _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
+                    _predicateBuilder.Append(" LIKE ")
+                        .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
                     break;
 
                 default:
@@ -226,7 +223,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(unaryOperatorNode));
             }
 
-            _predicateBuilder.Append(unaryOperatorNode.OperatorKind.ToSqlOperator() + " ");
+            _predicateBuilder.Append(unaryOperatorNode.OperatorKind.ToSqlOperator()).Append(" ");
             Bind(unaryOperatorNode.Operand);
         }
     }
