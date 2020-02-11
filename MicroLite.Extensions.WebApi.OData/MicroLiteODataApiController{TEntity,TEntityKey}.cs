@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="MicroLiteODataApiController{TEntity,TEntityKey}.cs" company="Project Contributors">
-// Copyright 2012 - 2019 Project Contributors
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,20 +10,22 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using MicroLite.Builder;
+using MicroLite.Extensions.WebApi.OData.Binders;
+using MicroLite.Mapping;
+using Net.Http.WebApi.OData;
+using Net.Http.WebApi.OData.Model;
+using Net.Http.WebApi.OData.Query;
+using Net.Http.WebApi.OData.Query.Validators;
+
 namespace MicroLite.Extensions.WebApi.OData
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using MicroLite.Builder;
-    using MicroLite.Extensions.WebApi.OData.Binders;
-    using MicroLite.Mapping;
-    using Net.Http.WebApi.OData;
-    using Net.Http.WebApi.OData.Query;
-    using Net.Http.WebApi.OData.Query.Validators;
-
     /// <summary>
     /// A controller which adds support for OData.
     /// </summary>
@@ -32,9 +34,9 @@ namespace MicroLite.Extensions.WebApi.OData
     public abstract class MicroLiteODataApiController<TEntity, TEntityKey> : MicroLiteApiController
         where TEntity : class, new()
     {
-        private static readonly IObjectInfo EntityObjectInfo = Mapping.ObjectInfo.For(typeof(TEntity));
+        private static readonly IObjectInfo s_entityObjectInfo = Mapping.ObjectInfo.For(typeof(TEntity));
 
-        private static SqlQuery entityCountQuery;
+        private static SqlQuery s_entityCountQuery;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="MicroLiteODataApiController{TEntity, TId}"/> class.
@@ -46,7 +48,7 @@ namespace MicroLite.Extensions.WebApi.OData
         protected MicroLiteODataApiController(IAsyncSession session)
             : base(session)
         {
-            this.ValidationSettings = new ODataValidationSettings
+            ValidationSettings = new ODataValidationSettings
             {
                 AllowedArithmeticOperators = AllowedArithmeticOperators.All,
                 AllowedFunctions = AllowedFunctions.Ceiling
@@ -78,7 +80,7 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <summary>
         /// Gets the object information for the entity.
         /// </summary>
-        protected IObjectInfo ObjectInfo => EntityObjectInfo;
+        protected IObjectInfo ObjectInfo => s_entityObjectInfo;
 
         /// <summary>
         /// Gets or sets the Validation Settings for the OData query.
@@ -91,15 +93,15 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <returns>The SqlQuery to execute.</returns>
         protected virtual SqlQuery CreateCountEntitiesSqlQuery()
         {
-            if (entityCountQuery is null)
+            if (s_entityCountQuery is null)
             {
-                entityCountQuery = SqlBuilder.Select()
-                    .Count(this.ObjectInfo.TableInfo.IdentifierColumn.ColumnName)
-                    .From(this.ObjectInfo.ForType)
+                s_entityCountQuery = SqlBuilder.Select()
+                    .Count(ObjectInfo.TableInfo.IdentifierColumn.ColumnName)
+                    .From(ObjectInfo.ForType)
                     .ToSqlQuery();
             }
 
-            return entityCountQuery;
+            return s_entityCountQuery;
         }
 
         /// <summary>
@@ -124,8 +126,8 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <returns>The SqlQuery to execute.</returns>
         protected virtual SqlQuery CreateSelectEntityByKeySqlQuery(TEntityKey entityKey)
             => SqlBuilder.Select("*")
-                 .From(this.ObjectInfo.ForType)
-                 .Where(this.ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
+                 .From(ObjectInfo.ForType)
+                 .Where(ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
                  .ToSqlQuery();
 
         /// <summary>
@@ -142,8 +144,8 @@ namespace MicroLite.Extensions.WebApi.OData
             }
 
             return SqlBuilder.Select(columnInfo.ColumnName)
-                .From(this.ObjectInfo.ForType)
-                .Where(this.ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
+                .From(ObjectInfo.ForType)
+                .Where(ObjectInfo.TableInfo.IdentifierColumn.ColumnName).IsEqualTo(entityKey)
                 .ToSqlQuery();
         }
 
@@ -157,9 +159,9 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'DELETE /odata/Entity(Key)'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#delete]]></remarks>
         protected virtual async Task<HttpResponseMessage> DeleteEntityResponseAsync(TEntityKey entityKey)
         {
-            var deleted = await this.Session.Advanced.DeleteAsync(this.ObjectInfo.ForType, entityKey).ConfigureAwait(false);
+            bool deleted = await Session.Advanced.DeleteAsync(ObjectInfo.ForType, entityKey).ConfigureAwait(false);
 
-            return this.Request.CreateODataResponse(deleted ? HttpStatusCode.NoContent : HttpStatusCode.NotFound);
+            return Request.CreateODataResponse(deleted ? HttpStatusCode.NoContent : HttpStatusCode.NotFound);
         }
 
         /// <summary>
@@ -167,14 +169,13 @@ namespace MicroLite.Extensions.WebApi.OData
         /// </summary>
         /// <returns>The an <see cref="HttpResponseMessage"/> containing the entity count.</returns>
         /// <remarks>Provides implementation for 'GET /odata/Entity/$count'.</remarks>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "It will be a Web API method")]
         protected virtual async Task<HttpResponseMessage> GetCountResponseAsync()
         {
-            var sqlQuery = this.CreateCountEntitiesSqlQuery();
+            SqlQuery sqlQuery = CreateCountEntitiesSqlQuery();
 
-            var count = await this.Session.Advanced.ExecuteScalarAsync<long>(sqlQuery).ConfigureAwait(false);
+            long count = await Session.Advanced.ExecuteScalarAsync<long>(sqlQuery).ConfigureAwait(false);
 
-            return this.Request.CreateODataResponse(count.ToString());
+            return Request.CreateODataResponse(count.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -186,28 +187,28 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'GET /odata/Entity(Key)/Property'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#property]]></remarks>
         protected virtual async Task<HttpResponseMessage> GetEntityPropertyResponseAsync(TEntityKey entityKey, string propertyName)
         {
-            var entitySet = this.Request.ResolveEntitySet();
-            var columnInfo = this.ObjectInfo.TableInfo.GetColumnInfoForProperty(propertyName);
+            EntitySet entitySet = Request.ResolveEntitySet();
+            ColumnInfo columnInfo = ObjectInfo.TableInfo.GetColumnInfoForProperty(propertyName);
 
             if (columnInfo is null)
             {
-                return this.Request.CreateODataErrorResponse(HttpStatusCode.BadRequest, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.");
+                return Request.CreateODataErrorResponse(HttpStatusCode.BadRequest, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.");
             }
 
-            var sqlQuery = this.CreateSelectPropertySqlQuery(columnInfo, entityKey);
+            SqlQuery sqlQuery = CreateSelectPropertySqlQuery(columnInfo, entityKey);
 
-            var result = await this.Session.SingleAsync<dynamic>(sqlQuery).ConfigureAwait(false);
+            dynamic result = await Session.SingleAsync<dynamic>(sqlQuery).ConfigureAwait(false);
 
             if (result is null)
             {
-                return this.Request.CreateODataResponse(HttpStatusCode.NotFound, null);
+                return Request.CreateODataResponse(HttpStatusCode.NotFound, null);
             }
 
-            var value = ((IDictionary<string, object>)result)[columnInfo.ColumnName];
+            object value = ((IDictionary<string, object>)result)[columnInfo.ColumnName];
 
-            Uri context = this.Request.ResolveODataContextUri(entitySet, entityKey, propertyName);
+            Uri context = Request.ResolveODataContextUri(entitySet, entityKey, propertyName);
 
-            return this.Request.CreateODataResponse(HttpStatusCode.OK, new ODataResponseContent(context, value));
+            return Request.CreateODataResponse(HttpStatusCode.OK, new ODataResponseContent(context, value));
         }
 
         /// <summary>
@@ -219,26 +220,26 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'GET /odata/Entity(Key)/Property/$value'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#propertyVal]]></remarks>
         protected virtual async Task<HttpResponseMessage> GetEntityPropertyValueResponseAsync(TEntityKey entityKey, string propertyName)
         {
-            var entitySet = this.Request.ResolveEntitySet();
-            var columnInfo = this.ObjectInfo.TableInfo.GetColumnInfoForProperty(propertyName);
+            EntitySet entitySet = Request.ResolveEntitySet();
+            ColumnInfo columnInfo = ObjectInfo.TableInfo.GetColumnInfoForProperty(propertyName);
 
             if (columnInfo is null)
             {
-                return this.Request.CreateODataErrorResponse(HttpStatusCode.BadRequest, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.");
+                return Request.CreateODataErrorResponse(HttpStatusCode.BadRequest, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.");
             }
 
-            var sqlQuery = this.CreateSelectPropertySqlQuery(columnInfo, entityKey);
+            SqlQuery sqlQuery = CreateSelectPropertySqlQuery(columnInfo, entityKey);
 
-            var result = await this.Session.SingleAsync<dynamic>(sqlQuery).ConfigureAwait(false);
+            dynamic result = await Session.SingleAsync<dynamic>(sqlQuery).ConfigureAwait(false);
 
             if (result is null)
             {
-                return this.Request.CreateODataResponse(HttpStatusCode.NotFound, null);
+                return Request.CreateODataResponse(HttpStatusCode.NotFound, null);
             }
 
-            var value = ((IDictionary<string, object>)result)[columnInfo.ColumnName]?.ToString();
+            string value = ((IDictionary<string, object>)result)[columnInfo.ColumnName]?.ToString();
 
-            return this.Request.CreateODataResponse(value);
+            return Request.CreateODataResponse(value);
         }
 
         /// <summary>
@@ -249,17 +250,17 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'GET /odata/Entity(Key)'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#entityByID]]></remarks>
         protected virtual async Task<HttpResponseMessage> GetEntityResponseAsync(TEntityKey entityKey)
         {
-            var sqlQuery = this.CreateSelectEntityByKeySqlQuery(entityKey);
+            SqlQuery sqlQuery = CreateSelectEntityByKeySqlQuery(entityKey);
 
-            var entity = await this.Session.SingleAsync<dynamic>(sqlQuery).ConfigureAwait(false);
+            dynamic entity = await Session.SingleAsync<dynamic>(sqlQuery).ConfigureAwait(false);
 
             if (entity is null)
             {
-                return this.Request.CreateODataResponse(HttpStatusCode.NotFound, null);
+                return Request.CreateODataResponse(HttpStatusCode.NotFound, null);
             }
 
-            var entitySet = this.Request.ResolveEntitySet();
-            Uri context = this.Request.ResolveODataContextUri(entitySet, entityKey);
+            EntitySet entitySet = Request.ResolveEntitySet();
+            Uri context = Request.ResolveODataContextUri(entitySet, entityKey);
 
             var responseContent = (IDictionary<string, object>)entity;
 
@@ -268,7 +269,7 @@ namespace MicroLite.Extensions.WebApi.OData
                 responseContent["@odata.context"] = context;
             }
 
-            return this.Request.CreateODataResponse(HttpStatusCode.OK, responseContent);
+            return Request.CreateODataResponse(HttpStatusCode.OK, responseContent);
         }
 
         /// <summary>
@@ -284,22 +285,22 @@ namespace MicroLite.Extensions.WebApi.OData
                 throw new ArgumentNullException(nameof(queryOptions));
             }
 
-            queryOptions.Validate(this.ValidationSettings);
+            queryOptions.Validate(ValidationSettings);
 
-            var sqlQuery = this.CreateSelectEntitiesSqlQuery(queryOptions);
+            SqlQuery sqlQuery = CreateSelectEntitiesSqlQuery(queryOptions);
 
-            var skip = queryOptions.Skip ?? 0;
-            var top = queryOptions.Top ?? this.ValidationSettings.MaxTop;
+            int skip = queryOptions.Skip ?? 0;
+            int top = queryOptions.Top ?? ValidationSettings.MaxTop;
 
-            var paged = await this.Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top)).ConfigureAwait(false);
+            PagedResult<dynamic> paged = await Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top)).ConfigureAwait(false);
 
-            Uri context = this.Request.ResolveODataContextUri(queryOptions.EntitySet, queryOptions.Select);
+            Uri context = Request.ResolveODataContextUri(queryOptions.EntitySet, queryOptions.Select);
             int? count = queryOptions.Count ? paged.TotalResults : default(int?);
             Uri nextLink = paged.MoreResultsAvailable ? queryOptions.NextLink(skip, paged.ResultsPerPage) : null;
 
             var responseContent = new ODataResponseContent(context, paged.Results, count, nextLink);
 
-            var response = this.Request.CreateODataResponse(HttpStatusCode.OK, responseContent);
+            HttpResponseMessage response = Request.CreateODataResponse(HttpStatusCode.OK, responseContent);
 
             if (queryOptions.Format != null)
             {
@@ -317,13 +318,13 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'POST /odata/Entity(Key)'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#create]]></remarks>
         protected virtual async Task<HttpResponseMessage> PostEntityResponseAsync(TEntity entity)
         {
-            await this.Session.InsertAsync(entity).ConfigureAwait(false);
+            await Session.InsertAsync(entity).ConfigureAwait(false);
 
-            var identifier = (TEntityKey)this.ObjectInfo.GetIdentifierValue(entity);
+            var identifier = (TEntityKey)ObjectInfo.GetIdentifierValue(entity);
 
-            var entitySet = this.Request.ResolveEntitySet();
-            var response = this.Request.CreateODataResponse(HttpStatusCode.Created, entity);
-            response.Headers.Location = this.Request.ResolveODataEntityUri(entitySet, identifier);
+            EntitySet entitySet = Request.ResolveEntitySet();
+            HttpResponseMessage response = Request.CreateODataResponse(HttpStatusCode.Created, entity);
+            response.Headers.Location = Request.ResolveODataEntityUri(entitySet, identifier);
 
             return response;
         }
@@ -340,18 +341,18 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'PUT /odata/Entity(Key)'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#update]]></remarks>
         protected virtual async Task<HttpResponseMessage> PutEntityResponseAsync(TEntityKey entityKey, TEntity entity)
         {
-            var existing = await this.Session.SingleAsync<TEntity>(entityKey).ConfigureAwait(false);
+            TEntity existing = await Session.SingleAsync<TEntity>(entityKey).ConfigureAwait(false);
 
             if (existing is null)
             {
-                return this.Request.CreateODataResponse(HttpStatusCode.NotFound);
+                return Request.CreateODataResponse(HttpStatusCode.NotFound);
             }
 
-            this.ObjectInfo.SetIdentifierValue(entity, entityKey);
+            ObjectInfo.SetIdentifierValue(entity, entityKey);
 
-            var updated = await this.Session.UpdateAsync(entity).ConfigureAwait(false);
+            bool updated = await Session.UpdateAsync(entity).ConfigureAwait(false);
 
-            return this.Request.CreateODataResponse(updated ? HttpStatusCode.NoContent : HttpStatusCode.NotModified);
+            return Request.CreateODataResponse(updated ? HttpStatusCode.NoContent : HttpStatusCode.NotModified);
         }
     }
 }

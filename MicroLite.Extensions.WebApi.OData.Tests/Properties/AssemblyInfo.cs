@@ -10,7 +10,7 @@ using Xunit;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MicroLite.Extensions.WebApi.OData.Tests")]
-[assembly: AssemblyCopyright("Copyright 2012 - 2019 Project Contributors all rights reserved.")]
+[assembly: AssemblyCopyright("Copyright Project Contributors all rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -28,10 +28,6 @@ using Xunit;
 //      Minor Version
 //      Build Number
 //      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: CollectionBehavior(DisableTestParallelization = true)]

@@ -1,15 +1,15 @@
-﻿namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
-{
-    using System;
-    using System.Net.Http;
-    using MicroLite.Builder;
-    using MicroLite.Extensions.WebApi.OData.Binders;
-    using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
-    using MicroLite.Mapping;
-    using Net.Http.WebApi.OData.Model;
-    using Net.Http.WebApi.OData.Query;
-    using Xunit;
+﻿using System;
+using System.Net.Http;
+using MicroLite.Builder;
+using MicroLite.Extensions.WebApi.OData.Binders;
+using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Mapping;
+using Net.Http.WebApi.OData.Model;
+using Net.Http.WebApi.OData.Query;
+using Xunit;
 
+namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+{
     public class OrderByBinderTests
     {
         public OrderByBinderTests()
@@ -24,7 +24,7 @@
                 new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$orderby=Name"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
-            var exception = Assert.Throws<ArgumentNullException>(
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => OrderByBinder.BindOrderBy(queryOptions.OrderBy, null, SqlBuilder.Select("*").From(typeof(Customer))));
 
             Assert.Equal("objectInfo", exception.ParamName);
@@ -37,7 +37,7 @@
                 new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$orderby=Name"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
-            var exception = Assert.Throws<ArgumentNullException>(
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => OrderByBinder.BindOrderBy(queryOptions.OrderBy, ObjectInfo.For(typeof(Customer)), null));
 
             Assert.Equal("orderBySqlBuilder", exception.ParamName);
@@ -45,7 +45,7 @@
 
         public class WhenCallingBindOrderBy_WithAnOrderByQueryOption
         {
-            private readonly SqlQuery sqlQuery;
+            private readonly SqlQuery _sqlQuery;
 
             public WhenCallingBindOrderBy_WithAnOrderByQueryOption()
             {
@@ -57,7 +57,7 @@
                         "http://services.microlite.org/odata/Customers?$orderby=Status desc,Name"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
-                this.sqlQuery = OrderByBinder.BindOrderBy(
+                _sqlQuery = OrderByBinder.BindOrderBy(
                     queryOptions.OrderBy,
                     ObjectInfo.For(typeof(Customer)),
                     SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
@@ -73,13 +73,13 @@
                     .OrderByAscending("Name")
                     .ToSqlQuery();
 
-                Assert.Equal(expected, this.sqlQuery);
+                Assert.Equal(expected, _sqlQuery);
             }
         }
 
         public class WhenCallingBindOrderBy_WithoutAnOrderByQueryOption
         {
-            private readonly SqlQuery sqlQuery;
+            private readonly SqlQuery _sqlQuery;
 
             public WhenCallingBindOrderBy_WithoutAnOrderByQueryOption()
             {
@@ -91,7 +91,7 @@
                         "http://services.microlite.org/odata/Customers"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
-                this.sqlQuery = OrderByBinder.BindOrderBy(
+                _sqlQuery = OrderByBinder.BindOrderBy(
                     queryOptions.OrderBy,
                     ObjectInfo.For(typeof(Customer)),
                     SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
@@ -106,7 +106,7 @@
                     .OrderByAscending("Id")
                     .ToSqlQuery();
 
-                Assert.Equal(expected, this.sqlQuery);
+                Assert.Equal(expected, _sqlQuery);
             }
         }
     }

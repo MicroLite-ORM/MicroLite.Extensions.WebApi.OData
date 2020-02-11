@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="FilterBinder.cs" company="Project Contributors">
-// Copyright 2012 - 2019 Project Contributors
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,32 +10,33 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Net;
+using MicroLite.Builder;
+using MicroLite.Builder.Syntax.Read;
+using MicroLite.Characters;
+using MicroLite.Mapping;
+using Net.Http.WebApi.OData;
+using Net.Http.WebApi.OData.Model;
+using Net.Http.WebApi.OData.Query;
+using Net.Http.WebApi.OData.Query.Binders;
+using Net.Http.WebApi.OData.Query.Expressions;
+
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
-    using System;
-    using System.Net;
-    using MicroLite.Builder;
-    using MicroLite.Builder.Syntax.Read;
-    using MicroLite.Characters;
-    using MicroLite.Mapping;
-    using Net.Http.WebApi.OData;
-    using Net.Http.WebApi.OData.Model;
-    using Net.Http.WebApi.OData.Query;
-    using Net.Http.WebApi.OData.Query.Binders;
-    using Net.Http.WebApi.OData.Query.Expressions;
-
     /// <summary>
     /// The binder class which can append the $filter by query option.
     /// </summary>
     public sealed class FilterBinder : AbstractFilterBinder
     {
-        private readonly IObjectInfo objectInfo;
-        private readonly RawWhereBuilder predicateBuilder = new RawWhereBuilder();
-        private readonly SqlCharacters sqlCharacters = SqlCharacters.Current;
+        private readonly IObjectInfo _objectInfo;
+        private readonly RawWhereBuilder _predicateBuilder = new RawWhereBuilder();
+        private readonly SqlCharacters _sqlCharacters = SqlCharacters.Current;
 
         private FilterBinder(IObjectInfo objectInfo)
         {
-            this.objectInfo = objectInfo;
+            _objectInfo = objectInfo;
         }
 
         /// <summary>
@@ -61,16 +62,16 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
             {
                 var filterBinder = new FilterBinder(objectInfo);
                 filterBinder.Bind(filterQueryOption);
-                filterBinder.predicateBuilder.ApplyTo(whereSqlBuilder);
+                filterBinder._predicateBuilder.ApplyTo(whereSqlBuilder);
             }
 
             return whereSqlBuilder;
         }
 
         /// <summary>
-        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" />.
+        /// Binds the specified <see cref="BinaryOperatorNode" />.
         /// </summary>
-        /// <param name="binaryOperatorNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.BinaryOperatorNode" /> to bind.</param>
+        /// <param name="binaryOperatorNode">The <see cref="BinaryOperatorNode" /> to bind.</param>
         protected override void Bind(BinaryOperatorNode binaryOperatorNode)
         {
             if (binaryOperatorNode is null)
@@ -78,9 +79,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(binaryOperatorNode));
             }
 
-            this.predicateBuilder.Append("(");
+            _predicateBuilder.Append("(");
 
-            this.Bind(binaryOperatorNode.Left);
+            Bind(binaryOperatorNode.Left);
 
             // ignore 'eq true' or 'eq false' for method calls
             if (!(binaryOperatorNode.Left.Kind == QueryNodeKind.FunctionCall
@@ -93,28 +94,28 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 {
                     if (binaryOperatorNode.OperatorKind == BinaryOperatorKind.Equal)
                     {
-                        this.predicateBuilder.Append(" IS ");
+                        _predicateBuilder.Append(" IS ");
                     }
                     else if (binaryOperatorNode.OperatorKind == BinaryOperatorKind.NotEqual)
                     {
-                        this.predicateBuilder.Append(" IS NOT ");
+                        _predicateBuilder.Append(" IS NOT ");
                     }
                 }
                 else
                 {
-                    this.predicateBuilder.Append(" " + binaryOperatorNode.OperatorKind.ToSqlOperator() + " ");
+                    _predicateBuilder.Append(" " + binaryOperatorNode.OperatorKind.ToSqlOperator() + " ");
                 }
 
-                this.Bind(binaryOperatorNode.Right);
+                Bind(binaryOperatorNode.Right);
             }
 
-            this.predicateBuilder.Append(")");
+            _predicateBuilder.Append(")");
         }
 
         /// <summary>
-        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.ConstantNode" />.
+        /// Binds the specified <see cref="ConstantNode" />.
         /// </summary>
-        /// <param name="constantNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.ConstantNode" /> to bind.</param>
+        /// <param name="constantNode">The <see cref="ConstantNode" /> to bind.</param>
         protected override void Bind(ConstantNode constantNode)
         {
             if (constantNode is null)
@@ -124,18 +125,18 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
             if (constantNode.EdmType is null)
             {
-                this.predicateBuilder.Append("NULL");
+                _predicateBuilder.Append("NULL");
             }
             else
             {
-                this.predicateBuilder.Append(this.sqlCharacters.GetParameterName(0), constantNode.Value);
+                _predicateBuilder.Append(_sqlCharacters.GetParameterName(0), constantNode.Value);
             }
         }
 
         /// <summary>
-        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" />.
+        /// Binds the specified <see cref="FunctionCallNode" />.
         /// </summary>
-        /// <param name="functionCallNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.FunctionCallNode" /> to bind.</param>
+        /// <param name="functionCallNode">The <see cref="FunctionCallNode" /> to bind.</param>
         protected override void Bind(FunctionCallNode functionCallNode)
         {
             if (functionCallNode is null)
@@ -143,7 +144,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(functionCallNode));
             }
 
-            var parameters = functionCallNode.Parameters;
+            IReadOnlyList<QueryNode> parameters = functionCallNode.Parameters;
 
             switch (functionCallNode.Name)
             {
@@ -157,50 +158,50 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 case "tolower":
                 case "toupper":
                 case "year":
-                    var name = functionCallNode.Name.StartsWith("to", StringComparison.Ordinal)
+                    string name = functionCallNode.Name.StartsWith("to", StringComparison.Ordinal)
                         ? functionCallNode.Name.Substring(2)
                         : functionCallNode.Name;
 
-                    this.predicateBuilder.Append(name.ToUpperInvariant() + "(");
+                    _predicateBuilder.Append(name.ToUpperInvariant() + "(");
 
                     for (int i = 0; i < parameters.Count; i++)
                     {
-                        this.Bind(parameters[i]);
+                        Bind(parameters[i]);
 
                         if (i < parameters.Count - 1)
                         {
-                            this.predicateBuilder.Append(", ");
+                            _predicateBuilder.Append(", ");
                         }
                     }
 
-                    this.predicateBuilder.Append(")");
+                    _predicateBuilder.Append(")");
                     break;
 
                 case "endswith":
-                    this.Bind(parameters[0]);
-                    this.predicateBuilder.Append(
-                        " LIKE " + this.sqlCharacters.GetParameterName(0),
-                        this.sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value);
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(
+                        " LIKE " + _sqlCharacters.GetParameterName(0),
+                        _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value);
                     break;
 
                 case "startswith":
-                    this.Bind(parameters[0]);
-                    this.predicateBuilder.Append(
-                        " LIKE " + this.sqlCharacters.GetParameterName(0),
-                        ((ConstantNode)parameters[1]).Value + this.sqlCharacters.LikeWildcard);
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(
+                        " LIKE " + _sqlCharacters.GetParameterName(0),
+                        ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
                     break;
 
                 case "trim":
-                    this.predicateBuilder.Append("LTRIM(RTRIM(");
-                    this.Bind(parameters[0]);
-                    this.predicateBuilder.Append("))");
+                    _predicateBuilder.Append("LTRIM(RTRIM(");
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append("))");
                     break;
 
                 case "contains":
-                    this.Bind(parameters[0]);
-                    this.predicateBuilder.Append(
-                        " LIKE " + this.sqlCharacters.GetParameterName(0),
-                        this.sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + this.sqlCharacters.LikeWildcard);
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(
+                        " LIKE " + _sqlCharacters.GetParameterName(0),
+                        _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
                     break;
 
                 default:
@@ -209,9 +210,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" />.
+        /// Binds the specified <see cref="PropertyAccessNode" />.
         /// </summary>
-        /// <param name="propertyAccessNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.PropertyAccessNode" /> to bind.</param>
+        /// <param name="propertyAccessNode">The <see cref="PropertyAccessNode" /> to bind.</param>
         protected override void Bind(PropertyAccessNode propertyAccessNode)
         {
             if (propertyAccessNode is null)
@@ -219,20 +220,20 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(propertyAccessNode));
             }
 
-            var column = this.objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.Property.Name);
+            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.Property.Name);
 
             if (column is null)
             {
-                throw new ODataException(HttpStatusCode.BadRequest, $"The type '{this.objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.Property.Name}'");
+                throw new ODataException(HttpStatusCode.BadRequest, $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.Property.Name}'");
             }
 
-            this.predicateBuilder.Append(column.ColumnName);
+            _predicateBuilder.Append(column.ColumnName);
         }
 
         /// <summary>
-        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" />.
+        /// Binds the specified <see cref="UnaryOperatorNode" />.
         /// </summary>
-        /// <param name="unaryOperatorNode">The <see cref="Net.Http.WebApi.OData.Query.Expressions.UnaryOperatorNode" /> to bind.</param>
+        /// <param name="unaryOperatorNode">The <see cref="UnaryOperatorNode" /> to bind.</param>
         protected override void Bind(UnaryOperatorNode unaryOperatorNode)
         {
             if (unaryOperatorNode is null)
@@ -240,8 +241,8 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(unaryOperatorNode));
             }
 
-            this.predicateBuilder.Append(unaryOperatorNode.OperatorKind.ToSqlOperator() + " ");
-            this.Bind(unaryOperatorNode.Operand);
+            _predicateBuilder.Append(unaryOperatorNode.OperatorKind.ToSqlOperator() + " ");
+            Bind(unaryOperatorNode.Operand);
         }
     }
 }
