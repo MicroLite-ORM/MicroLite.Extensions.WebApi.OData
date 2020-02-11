@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="OrderByBinder.cs" company="Project Contributors">
-// Copyright 2012 - 2019 Project Contributors
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,26 +10,26 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Builder.Syntax.Read;
+using MicroLite.Mapping;
+using Net.Http.WebApi.OData.Query;
+using Net.Http.WebApi.OData.Query.Binders;
+
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
-    using System;
-    using MicroLite.Builder.Syntax.Read;
-    using MicroLite.Mapping;
-    using Net.Http.WebApi.OData.Query;
-    using Net.Http.WebApi.OData.Query.Binders;
-
     /// <summary>
     /// The binder class which can append the $order by query option.
     /// </summary>
     public sealed class OrderByBinder : AbstractOrderByBinder
     {
-        private readonly IObjectInfo objectInfo;
-        private readonly IOrderBy orderBySqlBuilder;
+        private readonly IObjectInfo _objectInfo;
+        private readonly IOrderBy _orderBySqlBuilder;
 
         private OrderByBinder(IObjectInfo objectInfo, IOrderBy orderBySqlBuilder)
         {
-            this.objectInfo = objectInfo;
-            this.orderBySqlBuilder = orderBySqlBuilder;
+            _objectInfo = objectInfo;
+            _orderBySqlBuilder = orderBySqlBuilder;
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <summary>
-        /// Binds the specified <see cref="Net.Http.WebApi.OData.Query.OrderByProperty" />.
+        /// Binds the specified <see cref="OrderByProperty" />.
         /// </summary>
-        /// <param name="orderByProperty">The <see cref="Net.Http.WebApi.OData.Query.OrderByProperty" /> to bind.</param>
+        /// <param name="orderByProperty">The <see cref="OrderByProperty" /> to bind.</param>
         protected override void Bind(OrderByProperty orderByProperty)
         {
             if (orderByProperty is null)
@@ -75,15 +75,15 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(orderByProperty));
             }
 
-            var column = this.objectInfo.TableInfo.GetColumnInfoForProperty(orderByProperty.Property.Name);
+            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(orderByProperty.Property.Name);
 
             if (orderByProperty.Direction == OrderByDirection.Ascending)
             {
-                this.orderBySqlBuilder.OrderByAscending(column.ColumnName);
+                _orderBySqlBuilder.OrderByAscending(column.ColumnName);
             }
             else
             {
-                this.orderBySqlBuilder.OrderByDescending(column.ColumnName);
+                _orderBySqlBuilder.OrderByDescending(column.ColumnName);
             }
         }
     }

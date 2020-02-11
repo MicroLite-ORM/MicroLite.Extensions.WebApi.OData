@@ -1,15 +1,15 @@
-﻿namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
-{
-    using System;
-    using System.Net.Http;
-    using MicroLite.Builder;
-    using MicroLite.Extensions.WebApi.OData.Binders;
-    using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
-    using MicroLite.Mapping;
-    using Net.Http.WebApi.OData.Model;
-    using Net.Http.WebApi.OData.Query;
-    using Xunit;
+﻿using System;
+using System.Net.Http;
+using MicroLite.Builder;
+using MicroLite.Extensions.WebApi.OData.Binders;
+using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Mapping;
+using Net.Http.WebApi.OData.Model;
+using Net.Http.WebApi.OData.Query;
+using Xunit;
 
+namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+{
     public class SelectBinderTests
     {
         public SelectBinderTests()
@@ -24,7 +24,7 @@
                 new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
-            var exception = Assert.Throws<ArgumentNullException>(
+            ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => SelectBinder.BindSelect(queryOptions.Select, null));
 
             Assert.Equal("objectInfo", exception.ParamName);
@@ -32,7 +32,7 @@
 
         public class WhenCallingBindSelectQueryOptionAndNoPropertiesHaveBeenSpecified
         {
-            private readonly SqlQuery sqlQuery;
+            private readonly SqlQuery _sqlQuery;
 
             public WhenCallingBindSelectQueryOptionAndNoPropertiesHaveBeenSpecified()
             {
@@ -42,7 +42,7 @@
                     new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
-                this.sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
+                _sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
@@ -50,13 +50,13 @@
             {
                 var expected = SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery();
 
-                Assert.Equal(expected, this.sqlQuery);
+                Assert.Equal(expected, _sqlQuery);
             }
         }
 
         public class WhenCallingBindSelectQueryOptionAndSpecificPropertiesHaveBeenSpecified
         {
-            private readonly SqlQuery sqlQuery;
+            private readonly SqlQuery _sqlQuery;
 
             public WhenCallingBindSelectQueryOptionAndSpecificPropertiesHaveBeenSpecified()
             {
@@ -68,7 +68,7 @@
                         "http://services.microlite.org/odata/Customers?$select=Name,DateOfBirth,Status"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
-                this.sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
+                _sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
@@ -76,13 +76,13 @@
             {
                 var expected = SqlBuilder.Select("Name", "DateOfBirth", "CustomerStatusId").From(typeof(Customer)).ToSqlQuery();
 
-                Assert.Equal(expected, this.sqlQuery);
+                Assert.Equal(expected, _sqlQuery);
             }
         }
 
         public class WhenCallingBindSelectQueryOptionAndStarHasBeenSpecified
         {
-            private readonly SqlQuery sqlQuery;
+            private readonly SqlQuery _sqlQuery;
 
             public WhenCallingBindSelectQueryOptionAndStarHasBeenSpecified()
             {
@@ -92,7 +92,7 @@
                     new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$select=*"),
                     EntityDataModel.Current.EntitySets["Customers"]);
 
-                this.sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
+                _sqlQuery = SelectBinder.BindSelect(queryOptions.Select, ObjectInfo.For(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
@@ -100,7 +100,7 @@
             {
                 var expected = SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery();
 
-                Assert.Equal(expected, this.sqlQuery);
+                Assert.Equal(expected, _sqlQuery);
             }
         }
     }

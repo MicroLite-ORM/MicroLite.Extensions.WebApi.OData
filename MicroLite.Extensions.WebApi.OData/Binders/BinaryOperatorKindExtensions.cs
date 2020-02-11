@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="BinaryOperatorKindExtensions.cs" company="Project Contributors">
-// Copyright 2012 - 2019 Project Contributors
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,16 +10,16 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
+using System.Net;
+using Net.Http.WebApi.OData;
+using Net.Http.WebApi.OData.Query.Expressions;
+
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
-    using System.Collections.Generic;
-    using System.Net;
-    using Net.Http.WebApi.OData;
-    using Net.Http.WebApi.OData.Query.Expressions;
-
     internal static class BinaryOperatorKindExtensions
     {
-        private static readonly Dictionary<BinaryOperatorKind, string> OperatorKindMap = new Dictionary<BinaryOperatorKind, string>
+        private static readonly Dictionary<BinaryOperatorKind, string> s_operatorKindMap = new Dictionary<BinaryOperatorKind, string>
         {
             [BinaryOperatorKind.Add] = "+",
             [BinaryOperatorKind.And] = "AND",
@@ -38,7 +38,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
         internal static string ToSqlOperator(this BinaryOperatorKind binaryOperatorKind)
         {
-            if (OperatorKindMap.TryGetValue(binaryOperatorKind, out string sqlOperator))
+            if (s_operatorKindMap.TryGetValue(binaryOperatorKind, out string sqlOperator))
             {
                 return sqlOperator;
             }

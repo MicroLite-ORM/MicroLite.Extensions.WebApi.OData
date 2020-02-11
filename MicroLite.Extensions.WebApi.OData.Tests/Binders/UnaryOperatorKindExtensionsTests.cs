@@ -1,11 +1,11 @@
-﻿namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
-{
-    using System.Net;
-    using MicroLite.Extensions.WebApi.OData.Binders;
-    using Net.Http.WebApi.OData;
-    using Net.Http.WebApi.OData.Query.Expressions;
-    using Xunit;
+﻿using System.Net;
+using MicroLite.Extensions.WebApi.OData.Binders;
+using Net.Http.WebApi.OData;
+using Net.Http.WebApi.OData.Query.Expressions;
+using Xunit;
 
+namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+{
     public class UnaryOperatorKindExtensionsTests
     {
         [Fact]
@@ -17,7 +17,7 @@
         [Fact]
         public void ToSqlOperatorThrowsODataExceptionForBinaryOperatorKindNone()
         {
-            var exception = Assert.Throws<ODataException>(() => ((UnaryOperatorKind)(-1)).ToSqlOperator());
+            ODataException exception = Assert.Throws<ODataException>(() => ((UnaryOperatorKind)(-1)).ToSqlOperator());
 
             Assert.Equal(HttpStatusCode.NotImplemented, exception.StatusCode);
             Assert.Equal("The operator '-1' is not implemented by this service", exception.Message);

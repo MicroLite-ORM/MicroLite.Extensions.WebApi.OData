@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="UnaryOperatorKindExtensions.cs" company="Project Contributors">
-// Copyright 2012 - 2019 Project Contributors
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,12 +10,12 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Net;
+using Net.Http.WebApi.OData;
+using Net.Http.WebApi.OData.Query.Expressions;
+
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
-    using System.Net;
-    using Net.Http.WebApi.OData;
-    using Net.Http.WebApi.OData.Query.Expressions;
-
     internal static class UnaryOperatorKindExtensions
     {
         internal static string ToSqlOperator(this UnaryOperatorKind unaryOperatorKind)

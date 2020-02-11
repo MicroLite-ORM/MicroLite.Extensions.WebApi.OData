@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="TableInfoExtensions.cs" company="Project Contributors">
-// Copyright 2012 - 2019 Project Contributors
+// Copyright Project Contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,18 +10,18 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
+using System;
+using MicroLite.Mapping;
+
 namespace MicroLite.Extensions.WebApi.OData
 {
-    using System;
-    using MicroLite.Mapping;
-
     internal static class TableInfoExtensions
     {
         internal static ColumnInfo GetColumnInfoForProperty(this TableInfo tableInfo, string propertyName)
         {
             for (int i = 0; i < tableInfo.Columns.Count; i++)
             {
-                var column = tableInfo.Columns[i];
+                ColumnInfo column = tableInfo.Columns[i];
 
                 if (column.PropertyInfo.Name.Equals(propertyName, StringComparison.Ordinal))
                 {

@@ -1,9 +1,9 @@
-﻿namespace MicroLite.Extensions.WebApi.Tests.OData
-{
-    using System.Web.Http;
-    using Net.Http.WebApi.OData.Model;
-    using TestEntities;
+﻿using System.Web.Http;
+using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using Net.Http.WebApi.OData.Model;
 
+namespace MicroLite.Extensions.WebApi.Tests.OData
+{
     internal static class TestHelper
     {
         internal static void EnsureEDM()
