@@ -34,10 +34,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         private readonly RawWhereBuilder _predicateBuilder = new RawWhereBuilder();
         private readonly SqlCharacters _sqlCharacters = SqlCharacters.Current;
 
-        private FilterBinder(IObjectInfo objectInfo)
-        {
-            _objectInfo = objectInfo;
-        }
+        private FilterBinder(IObjectInfo objectInfo) => _objectInfo = objectInfo;
 
         /// <summary>
         /// Binds the filter query option to the sql builder.
