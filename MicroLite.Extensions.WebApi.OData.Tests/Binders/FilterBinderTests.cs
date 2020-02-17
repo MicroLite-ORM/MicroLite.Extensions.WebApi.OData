@@ -15,6 +15,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
     public class FilterBinderTests
     {
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindFilterThrowsODataExceptionForUnspportedFunctionName()
         {
             TestHelper.EnsureEDM();
@@ -48,30 +49,35 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 5, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFourthQueryValue()
             {
                 Assert.Equal("Hayes%", _sqlQuery.Arguments[3].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 6, 12), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheThirdQueryValue()
             {
                 Assert.Equal("A0113334", _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -84,6 +90,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe4ArgumentValues()
             {
                 Assert.Equal(4, _sqlQuery.Arguments.Count);
@@ -106,18 +113,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -130,6 +140,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -152,18 +163,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -176,6 +190,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -200,24 +215,28 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheThirdQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -230,6 +249,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValues()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -254,24 +274,28 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheThirdQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -284,6 +308,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValues()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -308,18 +333,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -332,6 +360,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -356,18 +385,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -380,6 +412,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -402,12 +435,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(32, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -420,6 +455,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -440,12 +476,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("%Bloggs%", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -458,6 +496,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -480,12 +519,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(22, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -498,6 +539,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -520,12 +562,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("%Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -538,6 +582,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -560,12 +605,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("%Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -578,6 +625,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -600,12 +648,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(CustomerStatus.Active, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -618,6 +668,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -640,6 +691,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -653,6 +705,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBeNoArgumentValues()
             {
                 Assert.Equal(0, _sqlQuery.Arguments.Count);
@@ -675,12 +728,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -693,6 +748,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -715,12 +771,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(32, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -733,6 +791,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -757,12 +816,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -775,6 +836,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -799,12 +861,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -817,6 +881,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -841,12 +906,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -859,6 +926,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -883,12 +951,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -901,6 +971,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -923,12 +994,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(6, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -941,6 +1014,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -963,12 +1037,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -981,6 +1057,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1003,6 +1080,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1016,6 +1094,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBeNoArgumentValues()
             {
                 Assert.Equal(0, _sqlQuery.Arguments.Count);
@@ -1038,24 +1117,28 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentOneShouldBeTheReplacementValue()
             {
                 Assert.Equal("", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentTwoShouldBeTheValueToFind()
             {
                 Assert.Equal("JohnSmith", _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentZeroShouldBeTheValueToBeReplaced()
             {
                 Assert.Equal(" ", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1068,6 +1151,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValue()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -1090,12 +1174,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(32, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1108,6 +1194,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1130,12 +1217,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred%", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1148,6 +1237,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1170,12 +1260,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred%", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1188,6 +1280,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1210,24 +1303,28 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentOneShouldBeTheValueToBeLength()
             {
                 Assert.Equal(2, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentTwoShouldBeTheValueToFind()
             {
                 Assert.Equal("oh", _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentZeroShouldBeTheValueToBeStartIndex()
             {
                 Assert.Equal(1, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1240,6 +1337,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValue()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -1262,18 +1360,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentOneShouldBeTheValueToFind()
             {
                 Assert.Equal("ohnSmith", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentZeroShouldBeTheValueToBeStartIndex()
             {
                 Assert.Equal(1, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1286,6 +1387,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValue()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1308,12 +1410,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("fred bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1326,6 +1430,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1348,12 +1453,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("FRED BLOGGS", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1366,6 +1473,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1388,12 +1496,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("FRED BLOGGS", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1406,6 +1516,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1428,12 +1539,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(1971, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1446,6 +1559,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1468,12 +1582,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1486,6 +1602,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1508,18 +1625,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1532,6 +1652,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1554,18 +1675,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1578,6 +1702,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1600,18 +1725,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1624,6 +1752,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1646,18 +1775,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1670,6 +1802,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1692,18 +1825,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1716,6 +1852,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);

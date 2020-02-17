@@ -18,6 +18,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindOrderByThrowsArgumentNullExceptionForNullObjectInfo()
         {
             var queryOptions = new ODataQueryOptions(
@@ -31,6 +32,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindOrderByThrowsArgumentNullExceptionForNullOrderBySqlBuilder()
         {
             var queryOptions = new ODataQueryOptions(
@@ -64,6 +66,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheColumnNamesForTheSpecifiedPropertiesShouldBeSetInTheOrderByClause()
             {
                 var expected = SqlBuilder
@@ -98,6 +101,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheQueryShouldBeSortedByTheIdAscending()
             {
                 var expected = SqlBuilder

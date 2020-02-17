@@ -11,6 +11,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
     public class ODataQueryOptionExtensionsTests
     {
         [Fact]
+        [Trait("Category", "Unit")]
         public void CreateSqlQueryBindsSelectThenAddsFilterAndOrderBy()
         {
             TestHelper.EnsureEDM();
@@ -27,6 +28,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void CreateSqlQueryBindsSelectWildcardThenAddsFilterAndOrderBy()
         {
             TestHelper.EnsureEDM();

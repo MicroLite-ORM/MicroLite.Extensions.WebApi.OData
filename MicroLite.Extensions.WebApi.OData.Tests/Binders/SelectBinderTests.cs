@@ -18,6 +18,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindBindSelectThrowsArgumentNullExceptionForNullObjectInfo()
         {
             var queryOptions = new ODataQueryOptions(
@@ -46,6 +47,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void AllPropertiesOnTheMappedTypeShouldBeIncluded()
             {
                 var expected = SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery();
@@ -72,6 +74,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheColumnNamesForTheSpecifiedPropertiesShouldBeTheOnlyOnesInTheSelectList()
             {
                 var expected = SqlBuilder.Select("Name", "DateOfBirth", "CustomerStatusId").From(typeof(Customer)).ToSqlQuery();
@@ -96,6 +99,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void AllPropertiesOnTheMappedTypeShouldBeIncluded()
             {
                 var expected = SqlBuilder.Select("*").From(typeof(Customer)).ToSqlQuery();

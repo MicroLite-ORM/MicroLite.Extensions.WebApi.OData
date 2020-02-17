@@ -9,12 +9,14 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
     public class UnaryOperatorKindExtensionsTests
     {
         [Fact]
+        [Trait("Category", "Unit")]
         public void ToSqlOperatorReturnsNotForUnaryOperatorKindNot()
         {
             Assert.Equal("NOT", UnaryOperatorKind.Not.ToSqlOperator());
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void ToSqlOperatorThrowsODataExceptionForBinaryOperatorKindNone()
         {
             ODataException exception = Assert.Throws<ODataException>(() => ((UnaryOperatorKind)(-1)).ToSqlOperator());
