@@ -103,6 +103,15 @@
     <Compile Include="Binders\OrderByBinderTests.cs" />
     <Compile Include="Binders\SelectBinderTests.cs" />
     <Compile Include="Binders\UnaryOperatorKindExtensionsTests.cs" />
+    <Compile Include="Integration\CustomerController.cs" />
+    <Compile Include="Integration\IntegrationTest.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_DeleteTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetCountTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetPropertyTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetPropertyValueTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_PostTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_PutTests.cs" />
     <Compile Include="MicroLiteODataApiControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestEntities\Customer.cs" />
