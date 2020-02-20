@@ -32,7 +32,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
         protected HttpClient HttpClient { get; }
 
-        protected Mock<IAsyncSession> MockSession { get; } = new Mock<IAsyncSession>();
+        protected Mock<ISession> MockSession { get; } = new Mock<ISession>();
 
         public void Dispose()
         {
@@ -43,9 +43,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
         private class TestDependencyResolver : IDependencyResolver
         {
-            private readonly Mock<IAsyncSession> _mockSession;
+            private readonly Mock<ISession> _mockSession;
 
-            public TestDependencyResolver(Mock<IAsyncSession> mockSession)
+            public TestDependencyResolver(Mock<ISession> mockSession)
             {
                 _mockSession = mockSession;
             }

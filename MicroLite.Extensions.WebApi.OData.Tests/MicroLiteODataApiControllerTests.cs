@@ -30,7 +30,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
                 new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$skip=-1"),
                 EntityDataModel.Current.EntitySets["Customers"]);
 
-            var controller = new CustomerController(Mock.Of<IAsyncSession>());
+            var controller = new CustomerController(Mock.Of<ISession>());
 
             ODataException exception = await Assert.ThrowsAsync<ODataException>(() => controller.Get(queryOptions));
             Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
@@ -38,7 +38,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
 
         public class TheDefaultValidatonSettings
         {
-            private readonly CustomerController _controller = new CustomerController(Mock.Of<IAsyncSession>());
+            private readonly CustomerController _controller = new CustomerController(Mock.Of<ISession>());
 
             [Fact]
             [Trait("Category", "Unit")]
@@ -276,7 +276,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         public class WhenAValidSkipValueIsSpecified
         {
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
 
             public WhenAValidSkipValueIsSpecified()
@@ -309,7 +309,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         public class WhenAValidTopValueIsSpecified
         {
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
 
             public WhenAValidTopValueIsSpecified()
@@ -343,7 +343,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_DeleteEntityResponseAsync_AndAnEntityIsDeleted()
@@ -373,7 +373,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_DeleteEntityResponseAsync_AndAnEntityIsNotDeleted()
@@ -403,7 +403,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_GetCountResponseAsync()
@@ -450,7 +450,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly string _propertyName = "Foo";
             private readonly HttpResponseMessage _response;
 
@@ -491,7 +491,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             private readonly CustomerController _controller;
             private readonly ExpandoObject _entity = new ExpandoObject();
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly string _propertyName = "Name";
             private readonly HttpResponseMessage _response;
 
@@ -550,7 +550,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly string _propertyName = "Name";
             private readonly HttpResponseMessage _response;
 
@@ -582,7 +582,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly string _propertyName = "Foo";
             private readonly HttpResponseMessage _response;
 
@@ -623,7 +623,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             private readonly CustomerController _controller;
             private readonly ExpandoObject _entity = new ExpandoObject();
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly string _propertyName = "Name";
             private readonly HttpResponseMessage _response;
 
@@ -665,7 +665,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly string _propertyName = "Name";
             private readonly HttpResponseMessage _response;
 
@@ -696,7 +696,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_GetEntityResponseAsync_EntityKey_AndAnEntityIsNotReturned()
@@ -735,7 +735,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             private readonly CustomerController _controller;
             private readonly ExpandoObject _entity = new ExpandoObject();
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_GetEntityResponseAsync_EntityKey_AndAnEntityIsReturned()
@@ -783,7 +783,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -835,7 +835,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -889,7 +889,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             private readonly CustomerController _controller;
             private readonly Customer _customer = new Customer();
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_PostEntityResponseAsync()
@@ -939,7 +939,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_PutEntityResponseAsync_AndAnEntityIsNotReturned()
@@ -976,7 +976,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             public WhenCalling_PutEntityResponseAsync_AndAnEntityIsNotUpdated()
@@ -1014,7 +1014,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly CustomerController _controller;
             private readonly int _identifier = 12345;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly HttpResponseMessage _response;
 
             private readonly Customer _updatedCustomer = new Customer
@@ -1063,7 +1063,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         public class WhenConstructedWithAnISession
         {
             private readonly MicroLiteODataApiController<Customer, int> _controller;
-            private readonly IAsyncSession _session = new Mock<IAsyncSession>().Object;
+            private readonly ISession _session = new Mock<ISession>().Object;
 
             public WhenConstructedWithAnISession()
             {
@@ -1087,7 +1087,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1158,7 +1158,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1229,7 +1229,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1299,7 +1299,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1370,7 +1370,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1442,7 +1442,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1514,7 +1514,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1584,7 +1584,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         {
             private readonly HttpContent _content;
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1655,7 +1655,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
         public class WhenFormatQueryOptionIsSpecified
         {
             private readonly CustomerController _controller;
-            private readonly Mock<IAsyncSession> _mockSession = new Mock<IAsyncSession>();
+            private readonly Mock<ISession> _mockSession = new Mock<ISession>();
             private readonly ODataQueryOptions _queryOptions;
             private readonly HttpResponseMessage _response;
 
@@ -1699,7 +1699,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             [Trait("Category", "Unit")]
             public void AnArgumentNullExceptionIsThrown()
             {
-                var controller = new CustomerController(Mock.Of<IAsyncSession>());
+                var controller = new CustomerController(Mock.Of<ISession>());
 
                 var queryOptions = default(ODataQueryOptions);
 

@@ -698,8 +698,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                     .From(typeof(Customer))
                     .Where("Name").IsNull()
                     .ToSqlQuery()
-                    .CommandText
-                    .Replace("(", "((").Replace(")", "))"); // HACK - Add an extra set of parenthesis, it's an unnecessary bug in FilterBuilder which hasn't been fixed yet.
+                    .CommandText;
 
                 Assert.Equal(expected, _sqlQuery.CommandText);
             }
@@ -1087,8 +1086,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                     .From(typeof(Customer))
                     .Where("Name").IsNotNull()
                     .ToSqlQuery()
-                    .CommandText
-                    .Replace("(", "((").Replace(")", "))"); // HACK - Add an extra set of parenthesis, it's an unnecessary bug in FilterBuilder which hasn't been fixed yet.
+                    .CommandText;
 
                 Assert.Equal(expected, _sqlQuery.CommandText);
             }

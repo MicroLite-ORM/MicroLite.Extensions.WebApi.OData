@@ -45,7 +45,7 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>
         /// This constructor allows for an inheriting class to easily inject an ISession via an IOC container.
         /// </remarks>
-        protected MicroLiteODataApiController(IAsyncSession session)
+        protected MicroLiteODataApiController(ISession session)
             : base(session)
         {
             ValidationSettings = new ODataValidationSettings

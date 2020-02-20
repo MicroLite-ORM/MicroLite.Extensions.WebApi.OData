@@ -57,7 +57,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 var entities = new dynamic[0];
 
                 MockSession
-                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE ((Surname = ?)) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
+                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE (Surname = ?) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
                     .Returns((SqlQuery s, PagingOptions p) => Task.FromResult(new PagedResult<dynamic>(1, entities, p.Count, entities.Length)));
 
                 _httpResponseMessage = HttpClient.GetAsync("http://server/odata/Customers?$select=Forename,Surname&$filter=Surname eq 'Stark'").Result;
@@ -121,7 +121,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 };
 
                 MockSession
-                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE ((Surname = ?)) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
+                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE (Surname = ?) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
                     .Returns((SqlQuery s, PagingOptions p) => Task.FromResult(new PagedResult<dynamic>(1, entities, p.Count, entities.Length)));
 
                 _httpResponseMessage = HttpClient.GetAsync("http://server/odata/Customers?$select=Forename,Surname&$filter=Surname eq 'Stark'").Result;
@@ -178,7 +178,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 var entities = new dynamic[0];
 
                 MockSession
-                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE ((Surname = ?)) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
+                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE (Surname = ?) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
                     .Returns((SqlQuery s, PagingOptions p) => Task.FromResult(new PagedResult<dynamic>(1, entities, p.Count, entities.Length)));
 
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://server/odata/Customers?$select=Forename,Surname&$filter=Surname eq 'Stark'");
@@ -245,7 +245,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 };
 
                 MockSession
-                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE ((Surname = ?)) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
+                    .Setup(x => x.PagedAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Forename,Surname FROM Customers WHERE (Surname = ?) ORDER BY Id ASC"), It.IsAny<PagingOptions>()))
                     .Returns((SqlQuery s, PagingOptions p) => Task.FromResult(new PagedResult<dynamic>(1, entities, p.Count, entities.Length)));
 
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "http://server/odata/Customers?$select=Forename,Surname&$filter=Surname eq 'Stark'");

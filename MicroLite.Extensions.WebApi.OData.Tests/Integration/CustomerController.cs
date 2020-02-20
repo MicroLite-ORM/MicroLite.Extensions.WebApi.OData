@@ -10,7 +10,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
     [RoutePrefix("odata")]
     public class CustomerController : MicroLiteODataApiController<Customer, int>
     {
-        public CustomerController(IAsyncSession session)
+        public CustomerController(ISession session)
             : base(session)
         {
         }
