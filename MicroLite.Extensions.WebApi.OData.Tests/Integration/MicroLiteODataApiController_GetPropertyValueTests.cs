@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
+using Net.Http.OData;
 using Net.Http.WebApi.OData;
 using Xunit;
 
@@ -80,9 +81,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             [Fact]
             [Trait("Category", "Integration")]
-            public void DoesNotContain_Header_ContentType_Parameter_ODataMetadata()
+            public void Contains_Header_ContentType_Parameter_ODataMetadata()
             {
-                Assert.DoesNotContain(_httpResponseMessage.Content.Headers.ContentType.Parameters, x => x.Name == "odata.metadata");
+                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
             }
 
             [Fact]
@@ -134,9 +135,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             [Fact]
             [Trait("Category", "Integration")]
-            public void DoesNotContain_Header_ContentType_Parameter_ODataMetadata()
+            public void Contains_Header_ContentType_Parameter_ODataMetadata()
             {
-                Assert.DoesNotContain(_httpResponseMessage.Content.Headers.ContentType.Parameters, x => x.Name == "odata.metadata");
+                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
             }
 
             [Fact]
@@ -191,9 +192,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             [Fact]
             [Trait("Category", "Integration")]
-            public void DoesNotContain_Header_ContentType_Parameter_ODataMetadata()
+            public void Contains_Header_ContentType_Parameter_ODataMetadata()
             {
-                Assert.DoesNotContain(_httpResponseMessage.Content.Headers.ContentType.Parameters, x => x.Name == "odata.metadata");
+                Assert.Equal("none", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
             }
 
             [Fact]

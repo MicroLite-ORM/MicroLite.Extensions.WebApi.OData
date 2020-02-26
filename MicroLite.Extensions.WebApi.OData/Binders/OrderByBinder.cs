@@ -13,8 +13,9 @@
 using System;
 using MicroLite.Builder.Syntax.Read;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData.Query;
-using Net.Http.WebApi.OData.Query.Binders;
+using Net.Http.OData;
+using Net.Http.OData.Query;
+using Net.Http.OData.Query.Binders;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
@@ -72,7 +73,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(orderByProperty));
             }
 
-            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(orderByProperty.Property.Name);
+            if (orderByProperty.PropertyPath.Next != null)
+            {
+                throw ODataException.NotImplemented("This service does not support nested property paths.");
+            }
+
+            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(orderByProperty.PropertyPath.Property.Name);
 
             if (orderByProperty.Direction == OrderByDirection.Ascending)
             {

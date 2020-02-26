@@ -10,9 +10,8 @@
 //
 // </copyright>
 // -----------------------------------------------------------------------
-using System.Net;
-using Net.Http.WebApi.OData;
-using Net.Http.WebApi.OData.Query.Expressions;
+using Net.Http.OData;
+using Net.Http.OData.Query.Expressions;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
@@ -26,7 +25,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     return "NOT";
 
                 default:
-                    throw new ODataException(HttpStatusCode.NotImplemented, $"The operator '{unaryOperatorKind}' is not implemented by this service");
+                    throw ODataException.NotImplemented($"The operator '{unaryOperatorKind}' is not implemented by this service");
             }
         }
     }

@@ -26,6 +26,6 @@ The NuGet Package contains binaries compiled against (dependencies indented):
 
 * .NET Framework 4.5
   * MicroLite 7.0.0
-  * MicroLite.Extensions.WebApi 6.7.0
   * Microsoft.AspNet.WebApi.Core 5.2.7
-  * Net.Http.WebApi.OData 4.2.1
+  * Net.Http.OData 5.0.0
+  * Net.Http.WebApi.OData 5.0.0

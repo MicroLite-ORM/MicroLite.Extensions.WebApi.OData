@@ -20,8 +20,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             _httpConfiguration.DependencyResolver = new TestDependencyResolver(MockSession);
             _httpConfiguration.UseOData(entityDataModelBuilder =>
             {
-                entityDataModelBuilder.RegisterEntitySet<Customer>("Customers", x => x.Id);
-                entityDataModelBuilder.RegisterEntitySet<Invoice>("Invoices", x => x.Id);
+                entityDataModelBuilder
+                    .RegisterEntitySet<Customer>("Customers", x => x.Id)
+                    .RegisterEntitySet<Invoice>("Invoices", x => x.Id);
             });
 
             _httpConfiguration.MapHttpAttributeRoutes();

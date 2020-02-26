@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using MicroLite.Extensions.WebApi.OData.Binders;
-using Net.Http.WebApi.OData;
-using Net.Http.WebApi.OData.Query.Expressions;
+using Net.Http.OData;
+using Net.Http.OData.Query.Expressions;
 using Xunit;
 
 namespace MicroLite.Extensions.WebApi.Tests.OData.Binders

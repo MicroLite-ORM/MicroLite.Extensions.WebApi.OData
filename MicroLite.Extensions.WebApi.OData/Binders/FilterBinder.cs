@@ -12,16 +12,15 @@
 // -----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Net;
 using MicroLite.Builder;
 using MicroLite.Builder.Syntax.Read;
 using MicroLite.Characters;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData;
-using Net.Http.WebApi.OData.Model;
-using Net.Http.WebApi.OData.Query;
-using Net.Http.WebApi.OData.Query.Binders;
-using Net.Http.WebApi.OData.Query.Expressions;
+using Net.Http.OData;
+using Net.Http.OData.Model;
+using Net.Http.OData.Query;
+using Net.Http.OData.Query.Binders;
+using Net.Http.OData.Query.Expressions;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
@@ -190,7 +189,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     break;
 
                 default:
-                    throw new ODataException(HttpStatusCode.NotImplemented, $"The function '{functionCallNode.Name}' is not implemented by this service");
+                    throw ODataException.NotImplemented($"The function '{functionCallNode.Name}' is not implemented by this service.");
             }
         }
 
@@ -202,11 +201,17 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(propertyAccessNode));
             }
 
-            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.Property.Name);
+            if (propertyAccessNode.PropertyPath.Next != null)
+            {
+                throw ODataException.NotImplemented("This service does not support nested property paths.");
+            }
+
+            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.PropertyPath.Property.Name);
 
             if (column is null)
             {
-                throw new ODataException(HttpStatusCode.BadRequest, $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.Property.Name}'");
+                throw ODataException.BadRequest(
+                    $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.PropertyPath.Property.Name}'.");
             }
 
             _predicateBuilder.Append(column.ColumnName);

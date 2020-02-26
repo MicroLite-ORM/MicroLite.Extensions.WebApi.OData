@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 using MicroLite.Builder.Syntax.Read;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData.Query;
+using Net.Http.OData.Query;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {

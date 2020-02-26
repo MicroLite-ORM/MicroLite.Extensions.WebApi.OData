@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
-using Net.Http.WebApi.OData.Model;
+using Net.Http.OData.Model;
 
 namespace MicroLite.Extensions.WebApi.Tests.OData
 {

@@ -2,8 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
-using Net.Http.WebApi.OData.Query;
-using Net.Http.WebApi.OData.Query.Validators;
+using Net.Http.OData.Query;
 
 namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 {
@@ -19,32 +18,32 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
         [HttpGet]
         [Route("Customers/$count")]
-        public Task<HttpResponseMessage> Count()
+        public Task<IHttpActionResult> Count()
             => GetCountResponseAsync();
 
         [HttpDelete]
         [Route("Customers({id:int})")]
-        public Task<HttpResponseMessage> Delete(int id)
+        public Task<IHttpActionResult> Delete(int id)
             => DeleteEntityResponseAsync(id);
 
         [HttpGet]
         [Route("Customers({id:int})")]
-        public Task<HttpResponseMessage> Get(int id)
+        public Task<IHttpActionResult> Get(int id)
             => GetEntityResponseAsync(id);
 
         [HttpGet]
         [Route("Customers")]
-        public Task<HttpResponseMessage> Get(ODataQueryOptions queryOptions)
+        public Task<IHttpActionResult> Get(ODataQueryOptions queryOptions)
             => GetEntityResponseAsync(queryOptions);
 
         [HttpGet]
         [Route("Customers({id:int})/{propertyName}")]
-        public Task<HttpResponseMessage> GetProperty(int id, string propertyName)
+        public Task<IHttpActionResult> GetProperty(int id, string propertyName)
             => GetEntityPropertyResponseAsync(id, propertyName);
 
         [HttpGet]
         [Route("Customers({id:int})/{propertyName}/$value")]
-        public Task<HttpResponseMessage> GetPropertyValue(int id, string propertyName)
+        public Task<IHttpActionResult> GetPropertyValue(int id, string propertyName)
             => GetEntityPropertyValueResponseAsync(id, propertyName);
 
         [HttpPost]
@@ -54,7 +53,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
         [HttpPut]
         [Route("Customers({id:int})")]
-        public Task<HttpResponseMessage> Put(int id, [FromBody]Customer entity)
+        public Task<IHttpActionResult> Put(int id, [FromBody]Customer entity)
             => PutEntityResponseAsync(id, entity);
     }
 }

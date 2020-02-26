@@ -36,13 +36,13 @@
   
   <ItemGroup>
     <PackageReference Include="MicroLite" Version="7.0.0-preview20200226.1" />
-    <PackageReference Include="MicroLite.Extensions.WebApi" Version="7.0.0-preview20200226.1" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Net.Http.WebApi.OData" Version="4.2.1" />
+    <PackageReference Include="Net.Http.OData" Version="5.0.0-preview20200226.2" />
+    <PackageReference Include="Net.Http.WebApi.OData" Version="5.0.0-preview20200226.1" />
     <PackageReference Include="SecurityCodeScan" Version="3.4.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

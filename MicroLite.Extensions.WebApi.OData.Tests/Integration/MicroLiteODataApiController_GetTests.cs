@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
 using Moq;
-using Net.Http.WebApi.OData;
+using Net.Http.OData;
 using Xunit;
 
 namespace MicroLite.Extensions.WebApi.OData.Tests.Integration

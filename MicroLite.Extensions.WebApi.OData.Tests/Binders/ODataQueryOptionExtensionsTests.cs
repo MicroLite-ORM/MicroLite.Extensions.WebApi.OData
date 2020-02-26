@@ -1,9 +1,9 @@
-﻿using System.Net.Http;
-using MicroLite.Builder;
+﻿using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
-using Net.Http.WebApi.OData.Model;
-using Net.Http.WebApi.OData.Query;
+using Moq;
+using Net.Http.OData.Model;
+using Net.Http.OData.Query;
 using Xunit;
 
 namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
@@ -17,8 +17,9 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             TestHelper.EnsureEDM();
 
             var option = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$select=Forename,Surname&$filter=Forename eq 'John'&$orderby=Surname"),
-                EntityDataModel.Current.EntitySets["Customers"]);
+                "?$select=Forename,Surname&$filter=Forename eq 'John'&$orderby=Surname",
+                EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
 
             SqlQuery sqlQuery = option.CreateSqlQuery();
 
@@ -34,8 +35,9 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             TestHelper.EnsureEDM();
 
             var option = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Forename eq 'John'&$orderby=Surname"),
-                EntityDataModel.Current.EntitySets["Customers"]);
+                "?$filter=Forename eq 'John'&$orderby=Surname",
+                EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
 
             SqlQuery sqlQuery = option.CreateSqlQuery();
 

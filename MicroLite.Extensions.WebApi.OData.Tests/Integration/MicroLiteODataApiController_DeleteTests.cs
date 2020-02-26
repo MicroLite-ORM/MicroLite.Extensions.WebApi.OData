@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
-using Net.Http.WebApi.OData;
+using Net.Http.OData;
 using Xunit;
 
 namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
