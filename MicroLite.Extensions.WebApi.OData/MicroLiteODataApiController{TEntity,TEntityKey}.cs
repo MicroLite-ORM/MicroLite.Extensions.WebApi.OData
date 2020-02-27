@@ -220,9 +220,9 @@ namespace MicroLite.Extensions.WebApi.OData
 
             object value = ((IDictionary<string, object>)result)[columnInfo.ColumnName];
 
-            string context = Request.ResolveODataContext(entitySet, entityKey, propertyName);
+            string odataContext = Request.ResolveODataContext(entitySet, entityKey, propertyName);
 
-            return Ok(new ODataResponseContent(value, context));
+            return Ok(new ODataResponseContent { Context = odataContext, Value = value });
         }
 
         /// <summary>
@@ -274,16 +274,16 @@ namespace MicroLite.Extensions.WebApi.OData
             }
 
             EntitySet entitySet = Request.ResolveEntitySet();
-            string context = Request.ResolveODataContext<TEntityKey>(entitySet);
+            string odataContext = Request.ResolveODataContext<TEntityKey>(entitySet);
 
-            var responseContent = (IDictionary<string, object>)entity;
+            var value = (IDictionary<string, object>)entity;
 
-            if (context != null)
+            if (odataContext != null)
             {
-                responseContent["@odata.context"] = context;
+                value["@odata.context"] = odataContext;
             }
 
-            return Ok(responseContent);
+            return Ok(value);
         }
 
         /// <summary>
@@ -308,13 +308,11 @@ namespace MicroLite.Extensions.WebApi.OData
 
             PagedResult<dynamic> paged = await Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top)).ConfigureAwait(false);
 
-            string context = Request.ResolveODataContext(queryOptions.EntitySet, queryOptions.Select);
+            string odataContext = Request.ResolveODataContext(queryOptions.EntitySet, queryOptions.Select);
             int? count = queryOptions.Count ? paged.TotalResults : default(int?);
             string nextLink = paged.MoreResultsAvailable ? Request.NextLink(queryOptions, skip, paged.ResultsPerPage) : null;
 
-            var responseContent = new ODataResponseContent(paged.Results, context, count, nextLink);
-
-            return Ok(responseContent);
+            return Ok(new ODataResponseContent { Context = odataContext, Count = count, NextLink = nextLink, Value = paged.Results });
         }
 
         /// <summary>
