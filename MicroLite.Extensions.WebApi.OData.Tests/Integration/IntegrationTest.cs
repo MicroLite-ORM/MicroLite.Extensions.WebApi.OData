@@ -6,6 +6,8 @@ using System.Web.Http;
 using System.Web.Http.Dependencies;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
 using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 {
@@ -18,6 +20,10 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
         {
             _httpConfiguration = new HttpConfiguration();
             _httpConfiguration.DependencyResolver = new TestDependencyResolver(MockSession);
+
+            _httpConfiguration.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            _httpConfiguration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+
             _httpConfiguration.UseOData(entityDataModelBuilder =>
             {
                 entityDataModelBuilder

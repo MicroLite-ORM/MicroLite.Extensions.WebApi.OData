@@ -136,7 +136,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 string result = await _httpResponseMessage.Content.ReadAsStringAsync();
 
                 Assert.Equal(
-                    "{\"@odata.context\":\"http://server/odata/$metadata#Customers(Forename,Surname)\",\"value\":[{\"Forename\":\"Tony\",\"Surname\":\"Stark\"}]}",
+                    "{\"@odata.context\":\"http://server/odata/$metadata#Customers(Forename,Surname)\",\"value\":[{\"forename\":\"Tony\",\"surname\":\"Stark\"}]}",
                     result);
             }
 
@@ -263,7 +263,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 string result = await _httpResponseMessage.Content.ReadAsStringAsync();
 
                 Assert.Equal(
-                    "{\"value\":[{\"Forename\":\"Tony\",\"Surname\":\"Stark\"}]}",
+                    "{\"value\":[{\"forename\":\"Tony\",\"surname\":\"Stark\"}]}",
                     result);
             }
 
@@ -328,7 +328,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 string result = await _httpResponseMessage.Content.ReadAsStringAsync();
 
                 Assert.Equal(
-                    "{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Id\":122,\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\",\"@odata.context\":\"http://server/odata/$metadata#Customers/$entity\"}",
+                    "{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"id\":122,\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\",\"@odata.context\":\"http://server/odata/$metadata#Customers/$entity\"}",
                     result);
             }
 
@@ -396,7 +396,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 string result = await _httpResponseMessage.Content.ReadAsStringAsync();
 
                 Assert.Equal(
-                    "{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Id\":122,\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\"}",
+                    "{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"id\":122,\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\"}",
                     result);
             }
 

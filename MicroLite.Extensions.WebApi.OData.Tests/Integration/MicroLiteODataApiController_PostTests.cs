@@ -24,7 +24,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                     .Returns(Task.CompletedTask);
 
                 var content = new StringContent(
-                    "{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\"}",
+                    "{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\"}",
                     Encoding.UTF8,
                     "application/json");
 
@@ -41,8 +41,8 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
                 // TODO: should the response contain metadata if it's not set to none in the request?
                 Assert.Equal(
-                    //"{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Id\":123,\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\",\"@odata.context\":\"http://server/odata/$metadata#Customers/$entity\"}",
-                    "{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Id\":123,\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\"}",
+                    //"{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"id\":123,\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\",\"@odata.context\":\"http://server/odata/$metadata#Customers/$entity\"}",
+                    "{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"id\":123,\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\"}",
                     result);
             }
 
@@ -96,7 +96,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, "http://server/odata/Customers");
                 httpRequestMessage.Headers.Add("Accept", "application/json;odata.metadata=none");
                 httpRequestMessage.Content = new StringContent(
-                    "{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\"}",
+                    "{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\"}",
                     Encoding.UTF8,
                     "application/json");
 
@@ -112,7 +112,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 string result = await _httpResponseMessage.Content.ReadAsStringAsync();
 
                 Assert.Equal(
-                    "{\"Created\":\"2012-06-22T00:00:00\",\"DateOfBirth\":\"1978-11-18T00:00:00\",\"Forename\":\"John\",\"Id\":123,\"Name\":\"John Smith\",\"Reference\":\"A/000122\",\"Status\":1,\"Surname\":\"Smith\"}",
+                    "{\"created\":\"2012-06-22T00:00:00\",\"dateOfBirth\":\"1978-11-18T00:00:00\",\"forename\":\"John\",\"id\":123,\"name\":\"John Smith\",\"reference\":\"A/000122\",\"status\":1,\"surname\":\"Smith\"}",
                     result);
             }
 

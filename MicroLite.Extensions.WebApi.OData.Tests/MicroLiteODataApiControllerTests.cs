@@ -181,13 +181,6 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
 
             [Fact]
             [Trait("Category", "Unit")]
-            public void ReplaceFunctionIsAllowed()
-            {
-                Assert.Equal(AllowedFunctions.Replace, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Replace);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
             public void RoundFunctionIsAllowed()
             {
                 Assert.Equal(AllowedFunctions.Round, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Round);

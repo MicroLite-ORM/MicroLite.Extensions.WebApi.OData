@@ -61,7 +61,6 @@ namespace MicroLite.Extensions.WebApi.OData
                     | AllowedFunctions.EndsWith
                     | AllowedFunctions.Floor
                     | AllowedFunctions.Month
-                    | AllowedFunctions.Replace
                     | AllowedFunctions.Round
                     | AllowedFunctions.StartsWith
                     | AllowedFunctions.Substring

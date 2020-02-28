@@ -17,6 +17,7 @@ using MicroLite.Mapping;
 using Net.Http.OData;
 using Net.Http.OData.Query;
 using Net.Http.OData.Query.Binders;
+using Net.Http.OData.Query.Expressions;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
