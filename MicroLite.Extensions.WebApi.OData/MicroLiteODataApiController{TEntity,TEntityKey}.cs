@@ -101,13 +101,7 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <returns>The SqlQuery to execute.</returns>
         protected virtual SqlQuery CreateCountEntitiesSqlQuery()
         {
-            if (s_entityCountQuery is null)
-            {
-                s_entityCountQuery = SqlBuilder.Select()
-                    .Count(ObjectInfo.TableInfo.IdentifierColumn.ColumnName)
-                    .From(ObjectInfo.ForType)
-                    .ToSqlQuery();
-            }
+            EnsureEntityCountQuery();
 
             return s_entityCountQuery;
         }
@@ -362,6 +356,17 @@ namespace MicroLite.Extensions.WebApi.OData
             }
 
             return StatusCode(HttpStatusCode.NotModified);
+        }
+
+        private static void EnsureEntityCountQuery()
+        {
+            if (s_entityCountQuery is null)
+            {
+                s_entityCountQuery = SqlBuilder.Select()
+                    .Count(s_entityObjectInfo.TableInfo.IdentifierColumn.ColumnName)
+                    .From(s_entityObjectInfo.ForType)
+                    .ToSqlQuery();
+            }
         }
     }
 }
