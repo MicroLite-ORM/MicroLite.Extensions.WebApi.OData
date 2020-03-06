@@ -27,7 +27,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
             {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataHeaderNames.ODataVersion).Single());
+                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
             }
 
             [Fact]
@@ -74,16 +74,16 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             [Fact]
             [Trait("Category", "Integration")]
-            public void Contains_Header_ODataVersion()
+            public void Contains_Header_ContentType_Parameter_ODataMetadata()
             {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataHeaderNames.ODataVersion).Single());
+                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
             }
 
             [Fact]
             [Trait("Category", "Integration")]
-            public void Contains_Header_ContentType_Parameter_ODataMetadata()
+            public void Contains_Header_ODataVersion()
             {
-                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
+                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
             }
 
             [Fact]
@@ -121,6 +121,13 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             [Fact]
             [Trait("Category", "Integration")]
+            public void Contains_Header_ContentType_Parameter_ODataMetadata()
+            {
+                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_TextPlain()
             {
                 Assert.Equal("text/plain", _httpResponseMessage.Content.Headers.ContentType.MediaType);
@@ -130,14 +137,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
             {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataHeaderNames.ODataVersion).Single());
-            }
-
-            [Fact]
-            [Trait("Category", "Integration")]
-            public void Contains_Header_ContentType_Parameter_ODataMetadata()
-            {
-                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
+                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
             }
 
             [Fact]
@@ -178,6 +178,13 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             [Fact]
             [Trait("Category", "Integration")]
+            public void Contains_Header_ContentType_Parameter_ODataMetadata()
+            {
+                Assert.Equal("none", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_TextPlain()
             {
                 Assert.Equal("text/plain", _httpResponseMessage.Content.Headers.ContentType.MediaType);
@@ -187,14 +194,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
             {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataHeaderNames.ODataVersion).Single());
-            }
-
-            [Fact]
-            [Trait("Category", "Integration")]
-            public void Contains_Header_ContentType_Parameter_ODataMetadata()
-            {
-                Assert.Equal("none", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
+                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
             }
 
             [Fact]

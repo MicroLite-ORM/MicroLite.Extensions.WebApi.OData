@@ -71,7 +71,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
             {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataHeaderNames.ODataVersion).Single());
+                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
             }
 
             [Fact]
@@ -134,7 +134,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
             {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataHeaderNames.ODataVersion).Single());
+                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
             }
 
             [Fact]
