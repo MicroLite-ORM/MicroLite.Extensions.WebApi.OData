@@ -44,7 +44,7 @@ namespace MicroLite.Extensions.WebApi.OData
 #pragma warning restore S2743 // Static fields should not be used in generic types
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MicroLiteODataApiController{TEntity, TEntityKey}"/> class.
+        /// Initialises a new instance of the <see cref="MicroLiteODataApiController{TEntity, TEntityKey}"/> class.
         /// </summary>
         /// <param name="session">The ISession for the current HTTP request.</param>
         /// <remarks>
@@ -196,7 +196,7 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'GET /odata/Entity(Key)/Property'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#property]]></remarks>
         protected virtual async Task<IHttpActionResult> GetEntityPropertyResponseAsync(TEntityKey entityKey, string propertyName)
         {
-            EntitySet entitySet = Request.ResolveEntitySet();
+            EntitySet entitySet = Request.ODataEntitySet();
             ColumnInfo columnInfo = ObjectInfo.TableInfo.GetColumnInfoForProperty(propertyName);
 
             if (columnInfo is null)
@@ -215,7 +215,7 @@ namespace MicroLite.Extensions.WebApi.OData
 
             object value = ((IDictionary<string, object>)result)[columnInfo.ColumnName];
 
-            string odataContext = Request.ResolveODataContext(entitySet, entityKey, propertyName);
+            string odataContext = Request.ODataContext(entitySet, entityKey, propertyName);
 
             return Ok(new ODataResponseContent { Context = odataContext, Value = value });
         }
@@ -229,7 +229,7 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <remarks>Provides implementation for 'GET /odata/Entity(Key)/Property/$value'. <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#propertyVal]]></remarks>
         protected virtual async Task<IHttpActionResult> GetEntityPropertyValueResponseAsync(TEntityKey entityKey, string propertyName)
         {
-            EntitySet entitySet = Request.ResolveEntitySet();
+            EntitySet entitySet = Request.ODataEntitySet();
             ColumnInfo columnInfo = ObjectInfo.TableInfo.GetColumnInfoForProperty(propertyName);
 
             if (columnInfo is null)
@@ -268,8 +268,8 @@ namespace MicroLite.Extensions.WebApi.OData
                 return NotFound();
             }
 
-            EntitySet entitySet = Request.ResolveEntitySet();
-            string odataContext = Request.ResolveODataContext<TEntityKey>(entitySet);
+            EntitySet entitySet = Request.ODataEntitySet();
+            string odataContext = Request.ODataContext<TEntityKey>(entitySet);
 
             var value = (IDictionary<string, object>)entity;
 
@@ -309,9 +309,9 @@ namespace MicroLite.Extensions.WebApi.OData
 
             var identifier = (TEntityKey)ObjectInfo.GetIdentifierValue(entity);
 
-            EntitySet entitySet = Request.ResolveEntitySet();
+            EntitySet entitySet = Request.ODataEntitySet();
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, entity);
-            response.Headers.Location = new Uri(Request.ResolveODataId(entitySet, identifier));
+            response.Headers.Location = new Uri(Request.ODataId(entitySet, identifier));
 
             return response;
         }
@@ -369,9 +369,9 @@ namespace MicroLite.Extensions.WebApi.OData
 
             PagedResult<dynamic> paged = await Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top)).ConfigureAwait(false);
 
-            string odataContext = Request.ResolveODataContext(queryOptions.EntitySet, queryOptions.Select);
+            string odataContext = Request.ODataContext(queryOptions.EntitySet, queryOptions.Select);
             int? count = queryOptions.Count ? paged.TotalResults : default(int?);
-            string nextLink = paged.MoreResultsAvailable ? Request.NextLink(queryOptions, skip, paged.ResultsPerPage) : null;
+            string nextLink = paged.MoreResultsAvailable ? Request.ODataNextLink(queryOptions, skip, paged.ResultsPerPage) : null;
 
             return Ok(new ODataResponseContent { Context = odataContext, Count = count, NextLink = nextLink, Value = paged.Results });
         }
