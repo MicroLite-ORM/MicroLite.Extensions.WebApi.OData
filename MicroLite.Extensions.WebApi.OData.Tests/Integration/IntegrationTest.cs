@@ -35,6 +35,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             _httpServer = new HttpServer(_httpConfiguration);
             HttpClient = new HttpClient(_httpServer);
+            HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         }
 
         protected HttpClient HttpClient { get; }
