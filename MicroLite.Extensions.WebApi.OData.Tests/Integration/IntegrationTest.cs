@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Dependencies;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
 using Moq;
+using Net.Http.OData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -34,8 +35,11 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             _httpConfiguration.MapHttpAttributeRoutes();
 
             _httpServer = new HttpServer(_httpConfiguration);
+
             HttpClient = new HttpClient(_httpServer);
             HttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+            HttpClient.DefaultRequestHeaders.Add(ODataRequestHeaderNames.ODataVersion, "4.0");
+            HttpClient.DefaultRequestHeaders.Add(ODataRequestHeaderNames.ODataMaxVersion, "4.0");
         }
 
         protected HttpClient HttpClient { get; }
