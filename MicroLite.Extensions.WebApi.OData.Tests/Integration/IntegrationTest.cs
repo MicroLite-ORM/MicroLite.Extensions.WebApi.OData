@@ -14,13 +14,15 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 {
     public abstract class IntegrationTest : IDisposable
     {
-        private HttpConfiguration _httpConfiguration;
-        private HttpServer _httpServer;
+        private readonly HttpConfiguration _httpConfiguration;
+        private readonly HttpServer _httpServer;
 
         protected IntegrationTest()
         {
-            _httpConfiguration = new HttpConfiguration();
-            _httpConfiguration.DependencyResolver = new TestDependencyResolver(MockSession);
+            _httpConfiguration = new HttpConfiguration
+            {
+                DependencyResolver = new TestDependencyResolver(MockSession)
+            };
 
             _httpConfiguration.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             _httpConfiguration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
@@ -49,6 +51,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
         public void Dispose()
         {
             HttpClient.Dispose();
+
             _httpServer.Dispose();
             _httpConfiguration.Dispose();
         }
@@ -57,10 +60,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
         {
             private readonly Mock<ISession> _mockSession;
 
-            public TestDependencyResolver(Mock<ISession> mockSession)
-            {
-                _mockSession = mockSession;
-            }
+            public TestDependencyResolver(Mock<ISession> mockSession) => _mockSession = mockSession;
 
             public IDependencyScope BeginScope() => this;
 
@@ -78,10 +78,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 return null;
             }
 
-            public IEnumerable<object> GetServices(Type serviceType)
-            {
-                return Enumerable.Empty<object>();
-            }
+            public IEnumerable<object> GetServices(Type serviceType) => Enumerable.Empty<object>();
         }
     }
 }

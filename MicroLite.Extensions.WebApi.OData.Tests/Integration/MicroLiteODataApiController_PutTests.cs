@@ -34,23 +34,17 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void DoesNotContain_Content()
-            {
-                Assert.Null(_httpResponseMessage.Content);
-            }
+                => Assert.Null(_httpResponseMessage.Content);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_NotFound()
-            {
-                Assert.Equal(HttpStatusCode.NotFound, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.NotFound, _httpResponseMessage.StatusCode);
         }
 
         public class ValidEntityKey_NotUpdated : IntegrationTest
@@ -85,23 +79,17 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void DoesNotContain_Content()
-            {
-                Assert.Null(_httpResponseMessage.Content);
-            }
+                => Assert.Null(_httpResponseMessage.Content);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_NotModified()
-            {
-                Assert.Equal(HttpStatusCode.NotModified, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.NotModified, _httpResponseMessage.StatusCode);
         }
 
         public class ValidEntityKey_Updated : IntegrationTest
@@ -136,23 +124,17 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void DoesNotContain_Content()
-            {
-                Assert.Null(_httpResponseMessage.Content);
-            }
+                => Assert.Null(_httpResponseMessage.Content);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_NoContent()
-            {
-                Assert.Equal(HttpStatusCode.NoContent, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.NoContent, _httpResponseMessage.StatusCode);
         }
     }
 }

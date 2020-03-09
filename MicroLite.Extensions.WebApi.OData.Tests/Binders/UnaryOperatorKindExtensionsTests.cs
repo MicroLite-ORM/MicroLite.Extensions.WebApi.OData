@@ -11,9 +11,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         [Fact]
         [Trait("Category", "Unit")]
         public void ToSqlOperatorReturnsNotForUnaryOperatorKindNot()
-        {
-            Assert.Equal("NOT", UnaryOperatorKind.Not.ToSqlOperator());
-        }
+            => Assert.Equal("NOT", UnaryOperatorKind.Not.ToSqlOperator());
 
         [Fact]
         [Trait("Category", "Unit")]

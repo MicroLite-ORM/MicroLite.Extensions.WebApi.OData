@@ -18,7 +18,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
             public InvalidEntityKey_ValidProperty()
             {
-                MockSession.Setup(x => x.SingleAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Name FROM Customers WHERE (Id = ?)"))).Returns(Task.FromResult(default(object)));
+                MockSession
+                    .Setup(x => x.SingleAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Name FROM Customers WHERE (Id = ?)")))
+                    .Returns(Task.FromResult(default(object)));
 
                 _httpResponseMessage = HttpClient.GetAsync("http://server/odata/Customers(122)/Name").Result;
             }
@@ -26,23 +28,17 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void DoesNotContain_Content()
-            {
-                Assert.Null(_httpResponseMessage.Content);
-            }
+                => Assert.Null(_httpResponseMessage.Content);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_NotFound()
-            {
-                Assert.Equal(HttpStatusCode.NotFound, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.NotFound, _httpResponseMessage.StatusCode);
         }
 
         public class ValidEntityKey_InvalidValidProperty : IntegrationTest
@@ -68,30 +64,22 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_ApplicationJson()
-            {
-                Assert.Equal("application/json", _httpResponseMessage.Content.Headers.ContentType.MediaType);
-            }
+                => Assert.Equal("application/json", _httpResponseMessage.Content.Headers.ContentType.MediaType);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_Parameter_ODataMetadata()
-            {
-                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
-            }
+                => Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == ODataMetadataLevelExtensions.HeaderName).Value);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_BadRequest()
-            {
-                Assert.Equal(HttpStatusCode.BadRequest, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.BadRequest, _httpResponseMessage.StatusCode);
         }
 
         public class ValidEntityKey_ValidProperty_Metadata_Minimal : IntegrationTest
@@ -103,7 +91,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
                 dynamic entity = new ExpandoObject();
                 entity.Name = "John Smith";
 
-                MockSession.Setup(x => x.SingleAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Name FROM Customers WHERE (Id = ?)"))).Returns(Task.FromResult((object)entity));
+                MockSession
+                    .Setup(x => x.SingleAsync<dynamic>(It.Is<SqlQuery>(s => s.CommandText == "SELECT Name FROM Customers WHERE (Id = ?)")))
+                    .Returns(Task.FromResult((object)entity));
 
                 _httpResponseMessage = HttpClient.GetAsync("http://server/odata/Customers(122)/Name").Result;
             }
@@ -122,30 +112,22 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_ApplicationJson()
-            {
-                Assert.Equal("application/json", _httpResponseMessage.Content.Headers.ContentType.MediaType);
-            }
+                => Assert.Equal("application/json", _httpResponseMessage.Content.Headers.ContentType.MediaType);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_Parameter_ODataMetadata()
-            {
-                Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == "odata.metadata").Value);
-            }
+                => Assert.Equal("minimal", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == "odata.metadata").Value);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_OK()
-            {
-                Assert.Equal(HttpStatusCode.OK, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.OK, _httpResponseMessage.StatusCode);
         }
 
         public class ValidEntityKey_ValidProperty_Metadata_None : IntegrationTest
@@ -179,30 +161,22 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_ApplicationJson()
-            {
-                Assert.Equal("application/json", _httpResponseMessage.Content.Headers.ContentType.MediaType);
-            }
+                => Assert.Equal("application/json", _httpResponseMessage.Content.Headers.ContentType.MediaType);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ContentType_Parameter_ODataMetadata()
-            {
-                Assert.Equal("none", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == "odata.metadata").Value);
-            }
+                => Assert.Equal("none", _httpResponseMessage.Content.Headers.ContentType.Parameters.Single(x => x.Name == "odata.metadata").Value);
 
             [Fact]
             [Trait("Category", "Integration")]
             public void Contains_Header_ODataVersion()
-            {
-                Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
-            }
+                => Assert.Equal("4.0", _httpResponseMessage.Headers.GetValues(ODataResponseHeaderNames.ODataVersion).Single());
 
             [Fact]
             [Trait("Category", "Integration")]
             public void StatusCode_OK()
-            {
-                Assert.Equal(HttpStatusCode.OK, _httpResponseMessage.StatusCode);
-            }
+                => Assert.Equal(HttpStatusCode.OK, _httpResponseMessage.StatusCode);
         }
     }
 }

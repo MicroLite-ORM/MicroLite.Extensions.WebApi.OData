@@ -13,10 +13,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
 {
     public class SelectBinderTests
     {
-        public SelectBinderTests()
-        {
-            TestHelper.EnsureEDM();
-        }
+        public SelectBinderTests() => TestHelper.EnsureEDM();
 
         [Fact]
         [Trait("Category", "Unit")]
