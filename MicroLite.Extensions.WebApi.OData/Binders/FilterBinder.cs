@@ -135,15 +135,18 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
             switch (functionCallNode.Name)
             {
-                case "ceiling":
-                case "day":
-                case "floor":
-                case "month":
-                case "round":
+                // String functions
                 case "substring":
                 case "tolower":
                 case "toupper":
+                // Date functions
+                case "day":
+                case "month":
                 case "year":
+                // Math functions
+                case "ceiling":
+                case "floor":
+                case "round":
                     string name = functionCallNode.Name.StartsWith("to", StringComparison.Ordinal)
                         ? functionCallNode.Name.Substring(2)
                         : functionCallNode.Name;
@@ -163,6 +166,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     _predicateBuilder.Append(")");
                     break;
 
+                case "contains":
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(" LIKE ")
+                        .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
+                    break;
+
                 case "endswith":
                     Bind(parameters[0]);
                     _predicateBuilder.Append(" LIKE ")
@@ -179,12 +188,6 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     _predicateBuilder.Append("LTRIM(RTRIM(");
                     Bind(parameters[0]);
                     _predicateBuilder.Append("))");
-                    break;
-
-                case "contains":
-                    Bind(parameters[0]);
-                    _predicateBuilder.Append(" LIKE ")
-                        .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
                     break;
 
                 default:
