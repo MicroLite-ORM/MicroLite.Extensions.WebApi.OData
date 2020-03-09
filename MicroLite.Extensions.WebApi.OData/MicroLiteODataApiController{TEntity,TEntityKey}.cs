@@ -39,10 +39,12 @@ namespace MicroLite.Extensions.WebApi.OData
     {
         private static readonly IObjectInfo s_entityObjectInfo = Mapping.ObjectInfo.For(typeof(TEntity));
 
+#pragma warning disable S2743 // Static fields should not be used in generic types
         private static SqlQuery s_entityCountQuery;
+#pragma warning restore S2743 // Static fields should not be used in generic types
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="MicroLiteODataApiController{TEntity, TId}"/> class.
+        /// Initializes a new instance of the <see cref="MicroLiteODataApiController{TEntity, TEntityKey}"/> class.
         /// </summary>
         /// <param name="session">The ISession for the current HTTP request.</param>
         /// <remarks>
@@ -285,27 +287,14 @@ namespace MicroLite.Extensions.WebApi.OData
         /// <param name="queryOptions">The query options.</param>
         /// <returns>The an <see cref="HttpResponseMessage"/> with the execution result.</returns>
         /// <remarks>Provides implementation for GET /odata/Entity?$... <![CDATA[http://www.odata.org/getting-started/basic-tutorial/#queryData]]></remarks>
-        protected virtual async Task<IHttpActionResult> GetEntityResponseAsync(ODataQueryOptions queryOptions)
+        protected virtual Task<IHttpActionResult> GetEntityResponseAsync(ODataQueryOptions queryOptions)
         {
             if (queryOptions is null)
             {
                 throw new ArgumentNullException(nameof(queryOptions));
             }
 
-            queryOptions.Validate(ValidationSettings);
-
-            SqlQuery sqlQuery = CreateSelectEntitiesSqlQuery(queryOptions);
-
-            int skip = queryOptions.Skip ?? 0;
-            int top = queryOptions.Top ?? ValidationSettings.MaxTop;
-
-            PagedResult<dynamic> paged = await Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top)).ConfigureAwait(false);
-
-            string odataContext = Request.ResolveODataContext(queryOptions.EntitySet, queryOptions.Select);
-            int? count = queryOptions.Count ? paged.TotalResults : default(int?);
-            string nextLink = paged.MoreResultsAvailable ? Request.NextLink(queryOptions, skip, paged.ResultsPerPage) : null;
-
-            return Ok(new ODataResponseContent { Context = odataContext, Count = count, NextLink = nextLink, Value = paged.Results });
+            return GetEntityResponseAsyncImpl(queryOptions);
         }
 
         /// <summary>
@@ -367,6 +356,24 @@ namespace MicroLite.Extensions.WebApi.OData
                     .From(s_entityObjectInfo.ForType)
                     .ToSqlQuery();
             }
+        }
+
+        private async Task<IHttpActionResult> GetEntityResponseAsyncImpl(ODataQueryOptions queryOptions)
+        {
+            queryOptions.Validate(ValidationSettings);
+
+            SqlQuery sqlQuery = CreateSelectEntitiesSqlQuery(queryOptions);
+
+            int skip = queryOptions.Skip ?? 0;
+            int top = queryOptions.Top ?? ValidationSettings.MaxTop;
+
+            PagedResult<dynamic> paged = await Session.PagedAsync<dynamic>(sqlQuery, PagingOptions.SkipTake(skip, top)).ConfigureAwait(false);
+
+            string odataContext = Request.ResolveODataContext(queryOptions.EntitySet, queryOptions.Select);
+            int? count = queryOptions.Count ? paged.TotalResults : default(int?);
+            string nextLink = paged.MoreResultsAvailable ? Request.NextLink(queryOptions, skip, paged.ResultsPerPage) : null;
+
+            return Ok(new ODataResponseContent { Context = odataContext, Count = count, NextLink = nextLink, Value = paged.Results });
         }
     }
 }
