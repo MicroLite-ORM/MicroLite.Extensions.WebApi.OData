@@ -139,7 +139,6 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 case "day":
                 case "floor":
                 case "month":
-                case "replace":
                 case "round":
                 case "substring":
                 case "tolower":

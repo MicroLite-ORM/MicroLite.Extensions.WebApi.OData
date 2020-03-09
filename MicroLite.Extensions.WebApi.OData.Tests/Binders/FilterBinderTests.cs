@@ -1107,64 +1107,6 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
         }
 
-        public class WhenCallingBindFilterQueryOptionWithASinglePropertyReplace
-        {
-            private readonly SqlQuery _sqlQuery;
-
-            public WhenCallingBindFilterQueryOptionWithASinglePropertyReplace()
-            {
-                TestHelper.EnsureEDM();
-
-                var queryOptions = new ODataQueryOptions(
-                    "?$filter=replace(Name, ' ', '') eq 'JohnSmith'",
-                    EntityDataModel.Current.EntitySets["Customers"],
-                    Mock.Of<IODataQueryOptionsValidator>());
-
-                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ArgumentOneShouldBeTheReplacementValue()
-            {
-                Assert.Equal("", _sqlQuery.Arguments[1].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ArgumentTwoShouldBeTheValueToFind()
-            {
-                Assert.Equal("JohnSmith", _sqlQuery.Arguments[2].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ArgumentZeroShouldBeTheValueToBeReplaced()
-            {
-                Assert.Equal(" ", _sqlQuery.Arguments[0].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheCommandTextShouldContainTheWhereClause()
-            {
-                string expected = SqlBuilder.Select("*")
-                    .From(typeof(Customer))
-                    .Where("(REPLACE(Name, ?, ?) = ?)", "JohnSmith")
-                    .ToSqlQuery()
-                    .CommandText;
-
-                Assert.Equal(expected, _sqlQuery.CommandText);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ThereShouldBe3ArgumentValue()
-            {
-                Assert.Equal(3, _sqlQuery.Arguments.Count);
-            }
-        }
-
         public class WhenCallingBindFilterQueryOptionWithASinglePropertyRound
         {
             private readonly SqlQuery _sqlQuery;
