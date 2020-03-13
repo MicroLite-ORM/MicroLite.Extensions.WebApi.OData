@@ -7,7 +7,7 @@
     <AssemblyOriginatorKeyFile>..\MicroLite.snk</AssemblyOriginatorKeyFile>
     <Version>7.0.0</Version>
     <Authors>Trevor Pilley and Project Contributors</Authors>
-    <Description>A .NET 4.5 library which adds OData 4.0 support to the extension for the MicroLite ORM Framework which integrates with ASP.NET WebApi.</Description>
+    <Description>A .NET 4.5 library which adds OData 4.0 support to the extension for the MicroLite ORM Framework to integrate with ASP.NET WebApi.</Description>
     <Copyright>Copyright 2012 - 2020 Project Contributors</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageTags>ASP.NET WebApi OData MicroORM ORM POCO Database</PackageTags>
