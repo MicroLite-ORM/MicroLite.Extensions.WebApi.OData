@@ -57,27 +57,32 @@ namespace MicroLite.Extensions.WebApi.OData
             ValidationSettings = new ODataValidationSettings
             {
                 AllowedArithmeticOperators = AllowedArithmeticOperators.All,
-                AllowedFunctions = AllowedFunctions.Ceiling
-                    | AllowedFunctions.Contains
-                    | AllowedFunctions.Day
-                    | AllowedFunctions.EndsWith
-                    | AllowedFunctions.Floor
-                    | AllowedFunctions.Month
-                    | AllowedFunctions.Round
-                    | AllowedFunctions.StartsWith
-                    | AllowedFunctions.Substring
-                    | AllowedFunctions.ToLower
-                    | AllowedFunctions.ToUpper
-                    | AllowedFunctions.Trim
-                    | AllowedFunctions.Year,
+                AllowedFunctions =
+                    //// String functions
+                    AllowedFunctions.Contains |
+                    AllowedFunctions.EndsWith |
+                    AllowedFunctions.StartsWith |
+                    AllowedFunctions.Substring |
+                    AllowedFunctions.ToLower |
+                    AllowedFunctions.ToUpper |
+                    AllowedFunctions.Trim |
+                    //// Date functions
+                    AllowedFunctions.Day |
+                    AllowedFunctions.Month |
+                    AllowedFunctions.Year |
+                    //// Math functions
+                    AllowedFunctions.Ceiling |
+                    AllowedFunctions.Floor |
+                    AllowedFunctions.Round,
                 AllowedLogicalOperators = AllowedLogicalOperators.All & ~AllowedLogicalOperators.Has,
-                AllowedQueryOptions = AllowedQueryOptions.Count
-                    | AllowedQueryOptions.Filter
-                    | AllowedQueryOptions.Format
-                    | AllowedQueryOptions.OrderBy
-                    | AllowedQueryOptions.Select
-                    | AllowedQueryOptions.Skip
-                    | AllowedQueryOptions.Top,
+                AllowedQueryOptions =
+                    AllowedQueryOptions.Count |
+                    AllowedQueryOptions.Filter |
+                    AllowedQueryOptions.Format |
+                    AllowedQueryOptions.OrderBy |
+                    AllowedQueryOptions.Select |
+                    AllowedQueryOptions.Skip |
+                    AllowedQueryOptions.Top,
                 MaxTop = 50,
             };
         }
