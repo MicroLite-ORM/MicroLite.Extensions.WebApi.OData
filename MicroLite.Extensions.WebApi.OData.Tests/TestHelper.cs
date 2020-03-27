@@ -11,12 +11,17 @@ namespace MicroLite.Extensions.WebApi.OData.Tests
             if (EntityDataModel.Current is null)
             {
                 var httpConfiguration = new HttpConfiguration();
-                httpConfiguration.UseOData(entityDataModelBuilder =>
-                {
-                    entityDataModelBuilder.RegisterEntitySet<Customer>("Customers", x => x.Id);
-                    entityDataModelBuilder.RegisterEntitySet<Invoice>("Invoices", x => x.Id);
-                });
+                UseOData(httpConfiguration);
             }
+        }
+
+        internal static void UseOData(HttpConfiguration httpConfiguration)
+        {
+            httpConfiguration.UseOData(entityDataModelBuilder =>
+            {
+                entityDataModelBuilder.RegisterEntitySet<Customer>("Customers", x => x.Id)
+                    .RegisterEntitySet<Invoice>("Invoices", x => x.Id);
+            });
         }
     }
 }
