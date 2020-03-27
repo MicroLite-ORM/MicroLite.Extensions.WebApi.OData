@@ -47,7 +47,7 @@
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="MicroLite, Version=7.0.0.0, Culture=neutral, PublicKeyToken=08410e6798c4fa37, processorArchitecture=MSIL">
-      <HintPath>..\packages\MicroLite.7.0.0-preview20200313.1\lib\net45\MicroLite.dll</HintPath>
+      <HintPath>..\packages\MicroLite.7.0.0\lib\net45\MicroLite.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -57,10 +57,10 @@
       <HintPath>..\packages\Moq.4.13.1\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="Net.Http.OData, Version=5.0.0.0, Culture=neutral, PublicKeyToken=74e1ef70f5770817, processorArchitecture=MSIL">
-      <HintPath>..\packages\Net.Http.OData.5.0.0-preview20200323.2\lib\net45\Net.Http.OData.dll</HintPath>
+      <HintPath>..\packages\Net.Http.OData.5.0.0\lib\net45\Net.Http.OData.dll</HintPath>
     </Reference>
     <Reference Include="Net.Http.WebApi.OData, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d54bd485d668c081, processorArchitecture=MSIL">
-      <HintPath>..\packages\Net.Http.WebApi.OData.5.0.0-preview20200323.1\lib\net45\Net.Http.WebApi.OData.dll</HintPath>
+      <HintPath>..\packages\Net.Http.WebApi.OData.5.0.0\lib\net45\Net.Http.WebApi.OData.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
