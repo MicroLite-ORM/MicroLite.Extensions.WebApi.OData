@@ -46,11 +46,8 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MicroLite, Version=6.3.0.0, Culture=neutral, PublicKeyToken=08410e6798c4fa37, processorArchitecture=MSIL">
-      <HintPath>..\packages\MicroLite.6.3.1\lib\net46\MicroLite.dll</HintPath>
-    </Reference>
-    <Reference Include="MicroLite.Extensions.WebApi, Version=6.7.0.0, Culture=neutral, PublicKeyToken=08410e6798c4fa37, processorArchitecture=MSIL">
-      <HintPath>..\packages\MicroLite.Extensions.WebApi.6.7.0\lib\net45\MicroLite.Extensions.WebApi.dll</HintPath>
+    <Reference Include="MicroLite, Version=7.0.0.0, Culture=neutral, PublicKeyToken=08410e6798c4fa37, processorArchitecture=MSIL">
+      <HintPath>..\packages\MicroLite.7.0.0\lib\net45\MicroLite.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -59,13 +56,17 @@
     <Reference Include="Moq, Version=4.13.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.13.1\lib\net45\Moq.dll</HintPath>
     </Reference>
-    <Reference Include="Net.Http.WebApi.OData, Version=4.2.0.0, Culture=neutral, PublicKeyToken=d54bd485d668c081, processorArchitecture=MSIL">
-      <HintPath>..\packages\Net.Http.WebApi.OData.4.2.1\lib\net45\Net.Http.WebApi.OData.dll</HintPath>
+    <Reference Include="Net.Http.OData, Version=5.0.0.0, Culture=neutral, PublicKeyToken=74e1ef70f5770817, processorArchitecture=MSIL">
+      <HintPath>..\packages\Net.Http.OData.5.0.0\lib\net45\Net.Http.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Net.Http.WebApi.OData, Version=5.0.0.0, Culture=neutral, PublicKeyToken=d54bd485d668c081, processorArchitecture=MSIL">
+      <HintPath>..\packages\Net.Http.WebApi.OData.5.0.0\lib\net45\Net.Http.WebApi.OData.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -83,6 +84,8 @@
     <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -103,6 +106,15 @@
     <Compile Include="Binders\OrderByBinderTests.cs" />
     <Compile Include="Binders\SelectBinderTests.cs" />
     <Compile Include="Binders\UnaryOperatorKindExtensionsTests.cs" />
+    <Compile Include="Integration\CustomerController.cs" />
+    <Compile Include="Integration\IntegrationTest.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_DeleteTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetCountTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetPropertyTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetPropertyValueTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_GetTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_PostTests.cs" />
+    <Compile Include="Integration\MicroLiteODataApiController_PutTests.cs" />
     <Compile Include="MicroLiteODataApiControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestEntities\Customer.cs" />
@@ -118,13 +130,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MicroLite.Extensions.WebApi.OData\MicroLite.Extensions.WebApi.OData.csproj">
       <Project>{05e061cc-54d7-4b30-b933-f8f54d18ba0b}</Project>
       <Name>MicroLite.Extensions.WebApi.OData</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

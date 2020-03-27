@@ -12,16 +12,15 @@
 // -----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Net;
 using MicroLite.Builder;
 using MicroLite.Builder.Syntax.Read;
 using MicroLite.Characters;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData;
-using Net.Http.WebApi.OData.Model;
-using Net.Http.WebApi.OData.Query;
-using Net.Http.WebApi.OData.Query.Binders;
-using Net.Http.WebApi.OData.Query.Expressions;
+using Net.Http.OData;
+using Net.Http.OData.Model;
+using Net.Http.OData.Query;
+using Net.Http.OData.Query.Binders;
+using Net.Http.OData.Query.Expressions;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
@@ -34,10 +33,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         private readonly RawWhereBuilder _predicateBuilder = new RawWhereBuilder();
         private readonly SqlCharacters _sqlCharacters = SqlCharacters.Current;
 
-        private FilterBinder(IObjectInfo objectInfo)
-        {
-            _objectInfo = objectInfo;
-        }
+        private FilterBinder(IObjectInfo objectInfo) => _objectInfo = objectInfo;
 
         /// <summary>
         /// Binds the filter query option to the sql builder.
@@ -139,16 +135,18 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
             switch (functionCallNode.Name)
             {
-                case "ceiling":
-                case "day":
-                case "floor":
-                case "month":
-                case "replace":
-                case "round":
+                // String functions
                 case "substring":
                 case "tolower":
                 case "toupper":
+                // Date functions
+                case "day":
+                case "month":
                 case "year":
+                // Math functions
+                case "ceiling":
+                case "floor":
+                case "round":
                     string name = functionCallNode.Name.StartsWith("to", StringComparison.Ordinal)
                         ? functionCallNode.Name.Substring(2)
                         : functionCallNode.Name;
@@ -166,6 +164,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     }
 
                     _predicateBuilder.Append(")");
+                    break;
+
+                case "contains":
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(" LIKE ")
+                        .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
                     break;
 
                 case "endswith":
@@ -186,14 +190,8 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     _predicateBuilder.Append("))");
                     break;
 
-                case "contains":
-                    Bind(parameters[0]);
-                    _predicateBuilder.Append(" LIKE ")
-                        .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value + _sqlCharacters.LikeWildcard);
-                    break;
-
                 default:
-                    throw new ODataException(HttpStatusCode.NotImplemented, $"The function '{functionCallNode.Name}' is not implemented by this service");
+                    throw ODataException.NotImplemented($"The function '{functionCallNode.Name}' is not implemented by this service.");
             }
         }
 
@@ -205,11 +203,17 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 throw new ArgumentNullException(nameof(propertyAccessNode));
             }
 
-            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.Property.Name);
+            if (propertyAccessNode.PropertyPath.Next != null)
+            {
+                throw ODataException.NotImplemented("This service does not support nested property paths.");
+            }
+
+            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(propertyAccessNode.PropertyPath.Property.Name);
 
             if (column is null)
             {
-                throw new ODataException(HttpStatusCode.BadRequest, $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.Property.Name}'");
+                throw ODataException.BadRequest(
+                    $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.PropertyPath.Property.Name}'.");
             }
 
             _predicateBuilder.Append(column.ColumnName);

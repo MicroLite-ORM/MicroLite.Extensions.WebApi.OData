@@ -14,9 +14,10 @@ using System;
 using MicroLite.Builder;
 using MicroLite.Builder.Syntax.Read;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData.Model;
-using Net.Http.WebApi.OData.Query;
-using Net.Http.WebApi.OData.Query.Binders;
+using Net.Http.OData;
+using Net.Http.OData.Query;
+using Net.Http.OData.Query.Binders;
+using Net.Http.OData.Query.Expressions;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
@@ -53,7 +54,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 return SqlBuilder.Select("*").From(objectInfo.ForType);
             }
 
-            string[] columnNames = new string[selectQueryOption.Properties.Count];
+            string[] columnNames = new string[selectQueryOption.PropertyPaths.Count];
 
             var selectBinder = new SelectBinder(objectInfo, columnNames);
             selectBinder.Bind(selectQueryOption);
@@ -62,14 +63,19 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
         }
 
         /// <inheritdoc/>
-        protected override void Bind(EdmProperty edmProperty)
+        protected override void Bind(PropertyPath propertyPath)
         {
-            if (edmProperty is null)
+            if (propertyPath is null)
             {
-                throw new ArgumentNullException(nameof(edmProperty));
+                throw new ArgumentNullException(nameof(propertyPath));
             }
 
-            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(edmProperty.Name);
+            if (propertyPath.Next != null)
+            {
+                throw ODataException.NotImplemented("This service does not support nested property paths.");
+            }
+
+            ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(propertyPath.Property.Name);
 
             _columnNames[_columnCount++] = column.ColumnName;
         }

@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Net.Http;
 using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData.Model;
-using Net.Http.WebApi.OData.Query;
+using Moq;
+using Net.Http.OData.Model;
+using Net.Http.OData.Query;
 using Xunit;
 
 namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
 {
     public class OrderByBinderTests
     {
-        public OrderByBinderTests()
-        {
-            TestHelper.EnsureEDM();
-        }
+        public OrderByBinderTests() => TestHelper.EnsureEDM();
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindOrderByThrowsArgumentNullExceptionForNullObjectInfo()
         {
             var queryOptions = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$orderby=Name"),
-                EntityDataModel.Current.EntitySets["Customers"]);
+                "?$orderby=Name",
+                EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
 
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => OrderByBinder.BindOrderBy(queryOptions.OrderBy, null, SqlBuilder.Select("*").From(typeof(Customer))));
@@ -31,11 +30,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         }
 
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindOrderByThrowsArgumentNullExceptionForNullOrderBySqlBuilder()
         {
             var queryOptions = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$orderby=Name"),
-                EntityDataModel.Current.EntitySets["Customers"]);
+                "?$orderby=Name",
+                EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
 
             ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
                 () => OrderByBinder.BindOrderBy(queryOptions.OrderBy, ObjectInfo.For(typeof(Customer)), null));
@@ -52,10 +53,9 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$orderby=Status desc,Name"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$orderby=Status desc,Name",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = OrderByBinder.BindOrderBy(
                     queryOptions.OrderBy,
@@ -64,6 +64,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheColumnNamesForTheSpecifiedPropertiesShouldBeSetInTheOrderByClause()
             {
                 var expected = SqlBuilder
@@ -86,10 +87,9 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = OrderByBinder.BindOrderBy(
                     queryOptions.OrderBy,
@@ -98,6 +98,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheQueryShouldBeSortedByTheIdAscending()
             {
                 var expected = SqlBuilder

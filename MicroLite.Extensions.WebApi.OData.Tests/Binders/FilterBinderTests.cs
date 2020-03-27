@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
 using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
 using MicroLite.Mapping;
-using Net.Http.WebApi.OData;
-using Net.Http.WebApi.OData.Model;
-using Net.Http.WebApi.OData.Query;
+using Moq;
+using Net.Http.OData;
+using Net.Http.OData.Model;
+using Net.Http.OData.Query;
 using Xunit;
 
 namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
@@ -15,19 +15,21 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
     public class FilterBinderTests
     {
         [Fact]
+        [Trait("Category", "Unit")]
         public void BindFilterThrowsODataExceptionForUnspportedFunctionName()
         {
             TestHelper.EnsureEDM();
 
             var queryOptions = new ODataQueryOptions(
-                new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=indexof(Name, 'ayes') eq 1"),
-                EntityDataModel.Current.EntitySets["Customers"]);
+                "?$filter=indexof(Name, 'ayes') eq 1",
+                EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
 
             ODataException exception = Assert.Throws<ODataException>(
                 () => FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))));
 
+            Assert.Equal("The function 'indexof' is not implemented by this service.", exception.Message);
             Assert.Equal(HttpStatusCode.NotImplemented, exception.StatusCode);
-            Assert.Equal("The function 'indexof' is not implemented by this service", exception.Message);
         }
 
         public class WhenCallingApplyToWithAComplexQuery
@@ -39,39 +41,43 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Created ge 2013-05-01 and Created le 2013-06-12 and Reference eq 'A0113334' and startswith(Name, 'Hayes') eq true"),
-                EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created ge 2013-05-01 and Created le 2013-06-12 and Reference eq 'A0113334' and startswith(Name, 'Hayes') eq true",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 5, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFourthQueryValue()
             {
                 Assert.Equal("Hayes%", _sqlQuery.Arguments[3].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 6, 12), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheThirdQueryValue()
             {
                 Assert.Equal("A0113334", _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -84,6 +90,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe4ArgumentValues()
             {
                 Assert.Equal(4, _sqlQuery.Arguments.Count);
@@ -99,25 +106,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=(endswith(Name, 'son') and endswith(Name, 'nes'))"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=(endswith(Name, 'son') and endswith(Name, 'nes'))",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -130,6 +141,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -145,25 +157,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=(endswith(Name, 'son') or endswith(Name, 'nes'))"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=(endswith(Name, 'son') or endswith(Name, 'nes'))",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -176,6 +192,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -191,33 +208,36 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Name eq 'Fred Bloggs' and Created gt 2013-04-01 and Created lt 2013-04-30"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Name eq 'Fred Bloggs' and Created gt 2013-04-01 and Created lt 2013-04-30",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheThirdQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -230,6 +250,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValues()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -245,33 +266,36 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Name eq 'Fred Bloggs' and Created gt 2013-04-01 or Created lt 2013-04-30"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Name eq 'Fred Bloggs' and Created gt 2013-04-01 or Created lt 2013-04-30",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheThirdQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -284,6 +308,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValues()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -299,27 +324,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                       "http://services.microlite.org/odata/Customers?$filter=Created gt 2013-04-01 and Created lt 2013-04-30"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created gt 2013-04-01 and Created lt 2013-04-30",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -332,6 +359,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -347,27 +375,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Created gt 2013-04-01 or Created lt 2013-04-30"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created gt 2013-04-01 or Created lt 2013-04-30",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 30), _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -380,6 +410,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -395,19 +426,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=ceiling(Id) eq 32"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=ceiling(Id) eq 32",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(32, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -420,6 +454,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -432,20 +467,25 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
 
             public WhenCallingBindFilterQueryOptionWithASinglePropertyContains()
             {
+                TestHelper.EnsureEDM();
+
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=contains(Name, 'Bloggs')"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=contains(Name, 'Bloggs')",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("%Bloggs%", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -458,6 +498,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -473,19 +514,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=day(DateOfBirth) eq 22"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=day(DateOfBirth) eq 22",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(22, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -498,6 +542,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -513,19 +558,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=endswith(Name, 'Bloggs')"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=endswith(Name, 'Bloggs')",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("%Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -538,6 +586,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -553,19 +602,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=endswith(Name, 'Bloggs') eq true"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=endswith(Name, 'Bloggs') eq true",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("%Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -578,6 +630,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -593,19 +646,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Status eq MicroLite.Extensions.WebApi.Tests.OData.TestEntities.CustomerStatus'Active'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Status eq MicroLite.Extensions.WebApi.Tests.OData.TestEntities.CustomerStatus'Active'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(CustomerStatus.Active, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -618,6 +674,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -633,26 +690,28 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Name eq null"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Name eq null",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
                     .From(typeof(Customer))
                     .Where("Name").IsNull()
                     .ToSqlQuery()
-                    .CommandText
-                    .Replace("(", "((").Replace(")", "))"); // HACK - Add an extra set of parenthesis, it's an unnecessary bug in FilterBuilder which hasn't been fixed yet.
+                    .CommandText;
 
                 Assert.Equal(expected, _sqlQuery.CommandText);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBeNoArgumentValues()
             {
                 Assert.Equal(0, _sqlQuery.Arguments.Count);
@@ -668,19 +727,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Name eq 'Fred Bloggs'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Name eq 'Fred Bloggs'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -693,6 +755,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -708,19 +771,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=floor(Id) eq 32"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=floor(Id) eq 32",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(32, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -733,6 +799,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -748,21 +815,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Created gt 2013-04-01"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created gt 2013-04-01",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -775,6 +843,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -790,21 +859,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Created ge 2013-04-01"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created ge 2013-04-01",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -817,6 +887,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -832,21 +903,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Created lt 2013-04-01"),
-                  EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created lt 2013-04-01",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -859,6 +931,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -874,21 +947,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "http://services.microlite.org/odata/Customers?$filter=Created le 2013-04-01"),
-                  EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Created le 2013-04-01",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal(new DateTime(2013, 4, 1), _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -901,6 +975,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -916,19 +991,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=month(DateOfBirth) eq 6"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=month(DateOfBirth) eq 6",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(6, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -941,6 +1019,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -956,19 +1035,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Name ne 'Fred Bloggs'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Name ne 'Fred Bloggs'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -981,6 +1063,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -996,71 +1079,20 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=Name ne null"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=Name ne null",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
                     .From(typeof(Customer))
                     .Where("Name").IsNotNull()
-                    .ToSqlQuery()
-                    .CommandText
-                    .Replace("(", "((").Replace(")", "))"); // HACK - Add an extra set of parenthesis, it's an unnecessary bug in FilterBuilder which hasn't been fixed yet.
-
-                Assert.Equal(expected, _sqlQuery.CommandText);
-            }
-
-            [Fact]
-            public void ThereShouldBeNoArgumentValues()
-            {
-                Assert.Equal(0, _sqlQuery.Arguments.Count);
-            }
-        }
-
-        public class WhenCallingBindFilterQueryOptionWithASinglePropertyReplace
-        {
-            private readonly SqlQuery _sqlQuery;
-
-            public WhenCallingBindFilterQueryOptionWithASinglePropertyReplace()
-            {
-                TestHelper.EnsureEDM();
-
-                var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=replace(Name, ' ', '') eq 'JohnSmith'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
-
-                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
-            }
-
-            [Fact]
-            public void ArgumentOneShouldBeTheReplacementValue()
-            {
-                Assert.Equal("", _sqlQuery.Arguments[1].Value);
-            }
-
-            [Fact]
-            public void ArgumentTwoShouldBeTheValueToFind()
-            {
-                Assert.Equal("JohnSmith", _sqlQuery.Arguments[2].Value);
-            }
-
-            [Fact]
-            public void ArgumentZeroShouldBeTheValueToBeReplaced()
-            {
-                Assert.Equal(" ", _sqlQuery.Arguments[0].Value);
-            }
-
-            [Fact]
-            public void TheCommandTextShouldContainTheWhereClause()
-            {
-                string expected = SqlBuilder.Select("*")
-                    .From(typeof(Customer))
-                    .Where("(REPLACE(Name, ?, ?) = ?)", "JohnSmith")
                     .ToSqlQuery()
                     .CommandText;
 
@@ -1068,9 +1100,10 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
-            public void ThereShouldBe3ArgumentValue()
+            [Trait("Category", "Unit")]
+            public void ThereShouldBeNoArgumentValues()
             {
-                Assert.Equal(3, _sqlQuery.Arguments.Count);
+                Assert.Equal(0, _sqlQuery.Arguments.Count);
             }
         }
 
@@ -1083,19 +1116,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=round(Id) eq 32"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=round(Id) eq 32",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(32, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1108,6 +1144,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1123,19 +1160,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=startswith(Name, 'Fred')"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=startswith(Name, 'Fred')",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred%", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1148,6 +1188,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1163,19 +1204,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=startswith(Name, 'Fred') eq true"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=startswith(Name, 'Fred') eq true",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred%", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1188,6 +1232,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1203,31 +1248,36 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=substring(Name, 1, 2) eq 'oh'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=substring(Name, 1, 2) eq 'oh'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentOneShouldBeTheValueToBeLength()
             {
                 Assert.Equal(2, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentTwoShouldBeTheValueToFind()
             {
                 Assert.Equal("oh", _sqlQuery.Arguments[2].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentZeroShouldBeTheValueToBeStartIndex()
             {
                 Assert.Equal(1, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1240,6 +1290,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe3ArgumentValue()
             {
                 Assert.Equal(3, _sqlQuery.Arguments.Count);
@@ -1255,25 +1306,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=substring(Name, 1) eq 'ohnSmith'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=substring(Name, 1) eq 'ohnSmith'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentOneShouldBeTheValueToFind()
             {
                 Assert.Equal("ohnSmith", _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ArgumentZeroShouldBeTheValueToBeStartIndex()
             {
                 Assert.Equal(1, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1286,6 +1341,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValue()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1301,19 +1357,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=tolower(Name) eq 'fred bloggs'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=tolower(Name) eq 'fred bloggs'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("fred bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1326,6 +1385,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1341,19 +1401,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=toupper(Name) eq 'FRED BLOGGS'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=toupper(Name) eq 'FRED BLOGGS'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("FRED BLOGGS", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1366,6 +1429,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1381,19 +1445,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=trim(Name) eq 'FRED BLOGGS'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=trim(Name) eq 'FRED BLOGGS'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal("FRED BLOGGS", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1406,6 +1473,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1421,19 +1489,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=year(DateOfBirth) eq 1971"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=year(DateOfBirth) eq 1971",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(1971, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1446,6 +1517,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1461,19 +1533,22 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Customers?$filter=not Name eq 'Fred Bloggs'"),
-                    EntityDataModel.Current.EntitySets["Customers"]);
+                    "?$filter=not Name eq 'Fred Bloggs'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheQueryValue()
             {
                 Assert.Equal("Fred Bloggs", _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1486,6 +1561,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe1ArgumentValue()
             {
                 Assert.Equal(1, _sqlQuery.Arguments.Count);
@@ -1501,25 +1577,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity add 10 eq 15"),
-                    EntityDataModel.Current.EntitySets["Invoices"]);
+                    "Invoices?$filter=Quantity add 10 eq 15",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1532,6 +1612,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1547,25 +1628,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity div 10 eq 15"),
-                    EntityDataModel.Current.EntitySets["Invoices"]);
+                    "Invoices?$filter=Quantity div 10 eq 15",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1578,6 +1663,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1593,25 +1679,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity mod 10 eq 15"),
-                    EntityDataModel.Current.EntitySets["Invoices"]);
+                    "Invoices?$filter=Quantity mod 10 eq 15",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1624,6 +1714,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1639,25 +1730,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity mul 10 eq 15"),
-                    EntityDataModel.Current.EntitySets["Invoices"]);
+                    "Invoices?$filter=Quantity mul 10 eq 15",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1670,6 +1765,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
@@ -1685,25 +1781,29 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    new HttpRequestMessage(HttpMethod.Get, "http://services.microlite.org/odata/Invoices?$filter=Quantity sub 10 eq 15"),
-                    EntityDataModel.Current.EntitySets["Invoices"]);
+                    "Invoices?$filter=Quantity sub 10 eq 15",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
 
                 _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheFirstQueryValue()
             {
                 Assert.Equal(10, _sqlQuery.Arguments[0].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheArgumentsShouldContainTheSecondQueryValue()
             {
                 Assert.Equal(15, _sqlQuery.Arguments[1].Value);
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void TheCommandTextShouldContainTheWhereClause()
             {
                 string expected = SqlBuilder.Select("*")
@@ -1716,6 +1816,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
 
             [Fact]
+            [Trait("Category", "Unit")]
             public void ThereShouldBe2ArgumentValues()
             {
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
