@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using Net.Http.OData.Query;
 
 namespace MicroLite.Extensions.WebApi.OData.Tests.Integration

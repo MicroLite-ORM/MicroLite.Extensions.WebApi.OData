@@ -2,7 +2,7 @@
 using System.Net;
 using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using MicroLite.Mapping;
 using Moq;
 using Net.Http.OData;
@@ -10,7 +10,7 @@ using Net.Http.OData.Model;
 using Net.Http.OData.Query;
 using Xunit;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 {
     public class FilterBinderTests
     {
@@ -646,7 +646,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    "?$filter=Status eq MicroLite.Extensions.WebApi.Tests.OData.TestEntities.CustomerStatus'Active'",
+                    "?$filter=Status eq MicroLite.Extensions.WebApi.OData.Tests.TestEntities.CustomerStatus'Active'",
                     EntityDataModel.Current.EntitySets["Customers"],
                     Mock.Of<IODataQueryOptionsValidator>());
 

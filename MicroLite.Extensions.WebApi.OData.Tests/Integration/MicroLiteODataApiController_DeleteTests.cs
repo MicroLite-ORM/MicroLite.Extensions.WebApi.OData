@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using Net.Http.OData;
 using Xunit;
 

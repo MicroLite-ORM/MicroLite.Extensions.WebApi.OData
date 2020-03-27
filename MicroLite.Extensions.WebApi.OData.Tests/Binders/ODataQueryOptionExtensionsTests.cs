@@ -1,12 +1,12 @@
 ﻿using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using Moq;
 using Net.Http.OData.Model;
 using Net.Http.OData.Query;
 using Xunit;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 {
     public class ODataQueryOptionExtensionsTests
     {

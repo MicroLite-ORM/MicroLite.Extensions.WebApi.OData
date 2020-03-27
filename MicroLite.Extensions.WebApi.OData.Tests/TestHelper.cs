@@ -1,8 +1,8 @@
 ﻿using System.Web.Http;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using Net.Http.OData.Model;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData
+namespace MicroLite.Extensions.WebApi.OData.Tests
 {
     internal static class TestHelper
     {
