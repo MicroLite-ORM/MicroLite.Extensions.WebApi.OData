@@ -1107,6 +1107,43 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
             }
         }
 
+        public class WhenCallingBindFilterQueryOptionWithASinglePropertyNow
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterQueryOptionWithASinglePropertyNow()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=Created ge now()",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Invoice))
+                    .Where("Created >= CURRENT_TIMESTAMP", null)
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBeNoArgumentValues()
+            {
+                Assert.Equal(0, _sqlQuery.Arguments.Count);
+            }
+        }
+
         public class WhenCallingBindFilterQueryOptionWithASinglePropertyRound
         {
             private readonly SqlQuery _sqlQuery;

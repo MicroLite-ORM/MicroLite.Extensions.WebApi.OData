@@ -69,6 +69,7 @@ namespace MicroLite.Extensions.WebApi.OData
                     //// Date functions
                     AllowedFunctions.Day |
                     AllowedFunctions.Month |
+                    AllowedFunctions.Now |
                     AllowedFunctions.Year |
                     //// Math functions
                     AllowedFunctions.Ceiling |

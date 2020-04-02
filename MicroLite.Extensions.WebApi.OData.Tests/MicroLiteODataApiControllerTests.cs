@@ -215,9 +215,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests
 
             [Fact]
             [Trait("Category", "Unit")]
-            public void NowFunctionIsNotAllowed()
+            public void NowFunctionIsAllowed()
             {
-                Assert.NotEqual(AllowedFunctions.Now, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Now);
+                Assert.Equal(AllowedFunctions.Now, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Now);
             }
 
             [Fact]

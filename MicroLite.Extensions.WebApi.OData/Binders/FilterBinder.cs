@@ -178,6 +178,10 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                         .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value);
                     break;
 
+                case "now":
+                    _predicateBuilder.Append("CURRENT_TIMESTAMP");
+                    break;
+
                 case "startswith":
                     Bind(parameters[0]);
                     _predicateBuilder.Append(" LIKE ")
