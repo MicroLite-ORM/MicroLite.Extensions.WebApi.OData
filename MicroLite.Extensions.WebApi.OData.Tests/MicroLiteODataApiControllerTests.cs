@@ -4,16 +4,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Hosting;
-using MicroLite.Extensions.WebApi.OData;
 using MicroLite.Extensions.WebApi.OData.Tests.Integration;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using Moq;
 using Net.Http.OData;
 using Net.Http.OData.Model;
 using Net.Http.OData.Query;
 using Xunit;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData
+namespace MicroLite.Extensions.WebApi.OData.Tests
 {
     public class MicroLiteODataApiControllerTests
     {
@@ -62,6 +61,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
 
             [Fact]
             [Trait("Category", "Unit")]
+            public void CastFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.Cast, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Cast);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
             public void CeilingFunctionIsAllowed()
             {
                 Assert.Equal(AllowedFunctions.Ceiling, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Ceiling);
@@ -86,6 +92,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             public void CountQueryOptionIsAllowed()
             {
                 Assert.Equal(AllowedQueryOptions.Count, _controller.ValidationSettings.AllowedQueryOptions & AllowedQueryOptions.Count);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void DateFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.Date, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Date);
             }
 
             [Fact]
@@ -132,6 +145,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
 
             [Fact]
             [Trait("Category", "Unit")]
+            public void FractionalSecondsFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.FractionalSeconds, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.FractionalSeconds);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
             public void HourFunctionIsNotAllowed()
             {
                 Assert.NotEqual(AllowedFunctions.Hour, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Hour);
@@ -146,6 +166,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
 
             [Fact]
             [Trait("Category", "Unit")]
+            public void IsOfFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.IsOf, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.IsOf);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
             public void LengthFunctionIsNotAllowed()
             {
                 Assert.NotEqual(AllowedFunctions.Length, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Length);
@@ -153,9 +180,23 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
 
             [Fact]
             [Trait("Category", "Unit")]
+            public void MaxDateTimeFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.MaxDateTime, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.MaxDateTime);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
             public void MaxTopIsSetTo50()
             {
                 Assert.Equal(50, _controller.ValidationSettings.MaxTop);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void MinDateTimeFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.MinDateTime, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.MinDateTime);
             }
 
             [Fact]
@@ -170,6 +211,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             public void MonthFunctionIsAllowed()
             {
                 Assert.Equal(AllowedFunctions.Month, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Month);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void NowFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.Now, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Now);
             }
 
             [Fact]
@@ -240,6 +288,13 @@ namespace MicroLite.Extensions.WebApi.Tests.OData
             public void TopQueryOptionIsAllowed()
             {
                 Assert.Equal(AllowedQueryOptions.Top, _controller.ValidationSettings.AllowedQueryOptions & AllowedQueryOptions.Top);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TotalOffsetMinutesFunctionIsNotAllowed()
+            {
+                Assert.NotEqual(AllowedFunctions.TotalOffsetMinutes, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.TotalOffsetMinutes);
             }
 
             [Fact]
