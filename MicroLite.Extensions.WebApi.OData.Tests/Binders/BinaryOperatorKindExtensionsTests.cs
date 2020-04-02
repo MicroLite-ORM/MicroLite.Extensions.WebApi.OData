@@ -20,6 +20,11 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 
         [Fact]
         [Trait("Category", "Unit")]
+        public void ToSqlOperatorReturnsEqualsForBinaryOperatorKindHas()
+            => Assert.Equal("=", BinaryOperatorKind.Has.ToSqlOperator());
+
+        [Fact]
+        [Trait("Category", "Unit")]
         public void ToSqlOperatorReturnsForwardSlashForBinaryOperatorKindDivide()
             => Assert.Equal("/", BinaryOperatorKind.Divide.ToSqlOperator());
 

@@ -26,6 +26,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
             [BinaryOperatorKind.Equal] = "=",
             [BinaryOperatorKind.GreaterThan] = ">",
             [BinaryOperatorKind.GreaterThanOrEqual] = ">=",
+            [BinaryOperatorKind.Has] = "=",
             [BinaryOperatorKind.LessThan] = "<",
             [BinaryOperatorKind.LessThanOrEqual] = "<=",
             [BinaryOperatorKind.Modulo] = "%",

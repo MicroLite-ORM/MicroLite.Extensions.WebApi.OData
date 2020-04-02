@@ -46,13 +46,13 @@ namespace MicroLite.Extensions.WebApi.OData.Tests
 
             [Fact]
             [Trait("Category", "Unit")]
-            public void AllLogicalOperatorsAreAllowed_ExceptHas()
+            public void AllLogicalOperatorsAreAllowed()
             {
                 Assert.Equal(AllowedLogicalOperators.And, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.And);
                 Assert.Equal(AllowedLogicalOperators.Equal, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.Equal);
                 Assert.Equal(AllowedLogicalOperators.GreaterThan, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.GreaterThan);
                 Assert.Equal(AllowedLogicalOperators.GreaterThanOrEqual, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.GreaterThanOrEqual);
-                Assert.NotEqual(AllowedLogicalOperators.Has, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.Has);
+                Assert.Equal(AllowedLogicalOperators.Has, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.Has);
                 Assert.Equal(AllowedLogicalOperators.LessThan, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.LessThan);
                 Assert.Equal(AllowedLogicalOperators.LessThanOrEqual, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.LessThanOrEqual);
                 Assert.Equal(AllowedLogicalOperators.NotEqual, _controller.ValidationSettings.AllowedLogicalOperators & AllowedLogicalOperators.NotEqual);

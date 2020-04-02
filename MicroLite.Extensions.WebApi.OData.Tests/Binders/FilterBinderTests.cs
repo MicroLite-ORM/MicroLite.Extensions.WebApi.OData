@@ -1822,5 +1822,49 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
                 Assert.Equal(2, _sqlQuery.Arguments.Count);
             }
         }
+
+        public class WhenCallingBindFilterQueryOptionWithSinglePropertyHasValue
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterQueryOptionWithSinglePropertyHasValue()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "Users?$filter=AccessLevel has MicroLite.Extensions.WebApi.OData.Tests.TestEntities.AccessLevel'Read,Write'",
+                    EntityDataModel.Current.EntitySets["Users"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(User)), SqlBuilder.Select("*").From(typeof(User))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheQueryValue()
+            {
+                Assert.Equal(AccessLevel.Read | AccessLevel.Write, _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(User))
+                    .Where("(AccessLevelId = ?)", AccessLevel.Read | AccessLevel.Write)
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe1ArgumentValue()
+            {
+                Assert.Equal(1, _sqlQuery.Arguments.Count);
+            }
+        }
     }
 }

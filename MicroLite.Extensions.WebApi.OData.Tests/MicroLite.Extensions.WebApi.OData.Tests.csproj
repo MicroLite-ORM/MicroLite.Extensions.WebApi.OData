@@ -117,9 +117,11 @@
     <Compile Include="Integration\MicroLiteODataApiController_PutTests.cs" />
     <Compile Include="MicroLiteODataApiControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestEntities\AccessLevel.cs" />
     <Compile Include="TestEntities\Customer.cs" />
     <Compile Include="TestEntities\CustomerStatus.cs" />
     <Compile Include="TestEntities\Invoice.cs" />
+    <Compile Include="TestEntities\User.cs" />
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>

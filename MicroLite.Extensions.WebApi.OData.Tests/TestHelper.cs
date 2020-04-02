@@ -20,7 +20,8 @@ namespace MicroLite.Extensions.WebApi.OData.Tests
             httpConfiguration.UseOData(entityDataModelBuilder =>
             {
                 entityDataModelBuilder.RegisterEntitySet<Customer>("Customers", x => x.Id)
-                    .RegisterEntitySet<Invoice>("Invoices", x => x.Id);
+                    .RegisterEntitySet<Invoice>("Invoices", x => x.Id)
+                    .RegisterEntitySet<User>("Users", x => x.Username);
             });
         }
     }

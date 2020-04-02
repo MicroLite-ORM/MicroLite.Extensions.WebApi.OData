@@ -74,7 +74,7 @@ namespace MicroLite.Extensions.WebApi.OData
                     AllowedFunctions.Ceiling |
                     AllowedFunctions.Floor |
                     AllowedFunctions.Round,
-                AllowedLogicalOperators = AllowedLogicalOperators.All & ~AllowedLogicalOperators.Has,
+                AllowedLogicalOperators = AllowedLogicalOperators.All,
                 AllowedQueryOptions =
                     AllowedQueryOptions.Count |
                     AllowedQueryOptions.Filter |
