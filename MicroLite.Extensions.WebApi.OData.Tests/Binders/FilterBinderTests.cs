@@ -199,6 +199,57 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
             }
         }
 
+        public class WhenCallingApplyToWithConcatFunction
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingApplyToWithConcatFunction()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=concat(concat(Forename, ', '), Name) eq 'John, Smith'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFirstQueryValue()
+            {
+                Assert.Equal(", ", _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheSecondQueryValue()
+            {
+                Assert.Equal("John, Smith", _sqlQuery.Arguments[1].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Customer))
+                    .Where("(Forename + ? + Name = ?)", ", ", "John, Smith")
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe2ArgumentValues()
+            {
+                Assert.Equal(2, _sqlQuery.Arguments.Count);
+            }
+        }
+
         public class WhenCallingBindFilterQueryOptionWithAPropertyEqualsAndGreaterThanAndLessThan
         {
             private readonly SqlQuery _sqlQuery;

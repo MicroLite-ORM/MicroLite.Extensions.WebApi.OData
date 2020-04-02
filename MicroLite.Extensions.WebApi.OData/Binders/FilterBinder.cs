@@ -166,6 +166,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     _predicateBuilder.Append(")");
                     break;
 
+                case "concat":
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(" + ");
+                    Bind(parameters[1]);
+                    break;
+
                 case "contains":
                     Bind(parameters[0]);
                     _predicateBuilder.Append(" LIKE ")

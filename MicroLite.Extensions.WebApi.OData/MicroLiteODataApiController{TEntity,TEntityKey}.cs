@@ -59,6 +59,7 @@ namespace MicroLite.Extensions.WebApi.OData
                 AllowedArithmeticOperators = AllowedArithmeticOperators.All,
                 AllowedFunctions =
                     //// String functions
+                    AllowedFunctions.Concat |
                     AllowedFunctions.Contains |
                     AllowedFunctions.EndsWith |
                     AllowedFunctions.StartsWith |

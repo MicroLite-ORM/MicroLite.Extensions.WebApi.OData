@@ -75,9 +75,9 @@ namespace MicroLite.Extensions.WebApi.OData.Tests
 
             [Fact]
             [Trait("Category", "Unit")]
-            public void ConcatFunctionIsNotAllowed()
+            public void ConcatFunctionIsAllowed()
             {
-                Assert.NotEqual(AllowedFunctions.Concat, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Concat);
+                Assert.Equal(AllowedFunctions.Concat, _controller.ValidationSettings.AllowedFunctions & AllowedFunctions.Concat);
             }
 
             [Fact]
