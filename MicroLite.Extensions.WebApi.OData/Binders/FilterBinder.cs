@@ -166,6 +166,12 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     _predicateBuilder.Append(")");
                     break;
 
+                case "concat":
+                    Bind(parameters[0]);
+                    _predicateBuilder.Append(" + ");
+                    Bind(parameters[1]);
+                    break;
+
                 case "contains":
                     Bind(parameters[0]);
                     _predicateBuilder.Append(" LIKE ")
@@ -176,6 +182,10 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     Bind(parameters[0]);
                     _predicateBuilder.Append(" LIKE ")
                         .Append(_sqlCharacters.GetParameterName(0), _sqlCharacters.LikeWildcard + ((ConstantNode)parameters[1]).Value);
+                    break;
+
+                case "now":
+                    _predicateBuilder.Append("CURRENT_TIMESTAMP");
                     break;
 
                 case "startswith":

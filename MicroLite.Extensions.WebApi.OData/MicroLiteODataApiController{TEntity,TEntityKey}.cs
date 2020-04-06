@@ -59,6 +59,7 @@ namespace MicroLite.Extensions.WebApi.OData
                 AllowedArithmeticOperators = AllowedArithmeticOperators.All,
                 AllowedFunctions =
                     //// String functions
+                    AllowedFunctions.Concat |
                     AllowedFunctions.Contains |
                     AllowedFunctions.EndsWith |
                     AllowedFunctions.StartsWith |
@@ -69,12 +70,13 @@ namespace MicroLite.Extensions.WebApi.OData
                     //// Date functions
                     AllowedFunctions.Day |
                     AllowedFunctions.Month |
+                    AllowedFunctions.Now |
                     AllowedFunctions.Year |
                     //// Math functions
                     AllowedFunctions.Ceiling |
                     AllowedFunctions.Floor |
                     AllowedFunctions.Round,
-                AllowedLogicalOperators = AllowedLogicalOperators.All & ~AllowedLogicalOperators.Has,
+                AllowedLogicalOperators = AllowedLogicalOperators.All,
                 AllowedQueryOptions =
                     AllowedQueryOptions.Count |
                     AllowedQueryOptions.Filter |

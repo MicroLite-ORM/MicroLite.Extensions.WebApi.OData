@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Dependencies;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
 using Moq;
 using Net.Http.OData;
 using Newtonsoft.Json;
@@ -27,12 +26,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
             _httpConfiguration.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             _httpConfiguration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
 
-            _httpConfiguration.UseOData(entityDataModelBuilder =>
-            {
-                entityDataModelBuilder
-                    .RegisterEntitySet<Customer>("Customers", x => x.Id)
-                    .RegisterEntitySet<Invoice>("Invoices", x => x.Id);
-            });
+            TestHelper.UseOData(_httpConfiguration);
 
             _httpConfiguration.MapHttpAttributeRoutes();
 

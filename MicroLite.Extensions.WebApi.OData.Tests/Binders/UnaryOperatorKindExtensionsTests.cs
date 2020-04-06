@@ -4,7 +4,7 @@ using Net.Http.OData;
 using Net.Http.OData.Query.Expressions;
 using Xunit;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 {
     public class UnaryOperatorKindExtensionsTests
     {

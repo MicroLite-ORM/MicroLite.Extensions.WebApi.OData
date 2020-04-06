@@ -4,7 +4,7 @@ using Net.Http.OData;
 using Net.Http.OData.Query.Expressions;
 using Xunit;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 {
     public class BinaryOperatorKindExtensionsTests
     {
@@ -17,6 +17,11 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
         [Trait("Category", "Unit")]
         public void ToSqlOperatorReturnsEqualsForBinaryOperatorKindEqual()
             => Assert.Equal("=", BinaryOperatorKind.Equal.ToSqlOperator());
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public void ToSqlOperatorReturnsEqualsForBinaryOperatorKindHas()
+            => Assert.Equal("=", BinaryOperatorKind.Has.ToSqlOperator());
 
         [Fact]
         [Trait("Category", "Unit")]

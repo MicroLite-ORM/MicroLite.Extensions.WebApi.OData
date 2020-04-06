@@ -2,7 +2,7 @@
 using System.Net;
 using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
-using MicroLite.Extensions.WebApi.Tests.OData.TestEntities;
+using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;
 using MicroLite.Mapping;
 using Moq;
 using Net.Http.OData;
@@ -10,7 +10,7 @@ using Net.Http.OData.Model;
 using Net.Http.OData.Query;
 using Xunit;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
+namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 {
     public class FilterBinderTests
     {
@@ -185,6 +185,57 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 string expected = SqlBuilder.Select("*")
                     .From(typeof(Customer))
                     .Where("(Name LIKE ? OR Name LIKE ?)", "%son", "%nes")
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe2ArgumentValues()
+            {
+                Assert.Equal(2, _sqlQuery.Arguments.Count);
+            }
+        }
+
+        public class WhenCallingApplyToWithConcatFunction
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingApplyToWithConcatFunction()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=concat(concat(Forename, ', '), Name) eq 'John, Smith'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFirstQueryValue()
+            {
+                Assert.Equal(", ", _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheSecondQueryValue()
+            {
+                Assert.Equal("John, Smith", _sqlQuery.Arguments[1].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Customer))
+                    .Where("(Forename + ? + Name = ?)", ", ", "John, Smith")
                     .ToSqlQuery()
                     .CommandText;
 
@@ -646,7 +697,7 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 TestHelper.EnsureEDM();
 
                 var queryOptions = new ODataQueryOptions(
-                    "?$filter=Status eq MicroLite.Extensions.WebApi.Tests.OData.TestEntities.CustomerStatus'Active'",
+                    "?$filter=Status eq MicroLite.Extensions.WebApi.OData.Tests.TestEntities.CustomerStatus'Active'",
                     EntityDataModel.Current.EntitySets["Customers"],
                     Mock.Of<IODataQueryOptionsValidator>());
 
@@ -894,6 +945,50 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
             }
         }
 
+        public class WhenCallingBindFilterQueryOptionWithASinglePropertyHasValue
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterQueryOptionWithASinglePropertyHasValue()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "Users?$filter=AccessLevel has MicroLite.Extensions.WebApi.OData.Tests.TestEntities.AccessLevel'Read,Write'",
+                    EntityDataModel.Current.EntitySets["Users"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(User)), SqlBuilder.Select("*").From(typeof(User))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheQueryValue()
+            {
+                Assert.Equal(AccessLevel.Read | AccessLevel.Write, _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(User))
+                    .Where("(AccessLevelId = ?)", AccessLevel.Read | AccessLevel.Write)
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe1ArgumentValue()
+            {
+                Assert.Equal(1, _sqlQuery.Arguments.Count);
+            }
+        }
+
         public class WhenCallingBindFilterQueryOptionWithASinglePropertyLessThan
         {
             private readonly SqlQuery _sqlQuery;
@@ -1093,6 +1188,43 @@ namespace MicroLite.Extensions.WebApi.Tests.OData.Binders
                 string expected = SqlBuilder.Select("*")
                     .From(typeof(Customer))
                     .Where("Name").IsNotNull()
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBeNoArgumentValues()
+            {
+                Assert.Equal(0, _sqlQuery.Arguments.Count);
+            }
+        }
+
+        public class WhenCallingBindFilterQueryOptionWithASinglePropertyNow
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterQueryOptionWithASinglePropertyNow()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=Created ge now()",
+                    EntityDataModel.Current.EntitySets["Invoices"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Invoice)), SqlBuilder.Select("*").From(typeof(Invoice))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Invoice))
+                    .Where("Created >= CURRENT_TIMESTAMP", null)
                     .ToSqlQuery()
                     .CommandText;
 

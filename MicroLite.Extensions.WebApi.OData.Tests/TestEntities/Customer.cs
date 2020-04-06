@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MicroLite.Extensions.WebApi.Tests.OData.TestEntities
+namespace MicroLite.Extensions.WebApi.OData.Tests.TestEntities
 {
     public class Customer
     {
