@@ -201,7 +201,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     break;
 
                 default:
-                    throw ODataException.NotImplemented($"The function '{functionCallNode.Name}' is not implemented by this service.");
+                    throw ODataException.NotImplemented($"The function '{functionCallNode.Name}' is not implemented by this service.", "$filter");
             }
         }
 
@@ -223,7 +223,8 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
             if (column is null)
             {
                 throw ODataException.BadRequest(
-                    $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.PropertyPath.Property.Name}'.");
+                    $"The type '{_objectInfo.ForType.Name}' does not contain a property named '{propertyAccessNode.PropertyPath.Property.Name}'.",
+                    _objectInfo.ForType.FullName);
             }
 
             _predicateBuilder.Append(column.ColumnName);

@@ -43,7 +43,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                 return sqlOperator;
             }
 
-            throw ODataException.NotImplemented($"The operator '{binaryOperatorKind}' is not implemented by this service.");
+            throw ODataException.NotImplemented($"The operator '{binaryOperatorKind}' is not implemented by this service.", "$filter");
         }
     }
 }

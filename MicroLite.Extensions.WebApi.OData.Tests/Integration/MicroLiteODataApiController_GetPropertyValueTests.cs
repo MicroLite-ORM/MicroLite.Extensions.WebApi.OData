@@ -58,7 +58,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Integration
 
                 string result = await _httpResponseMessage.Content.ReadAsStringAsync();
 
-                Assert.Equal("{\"error\":{\"code\":\"400\",\"message\":\"The type 'MicroLite.Extensions.WebApi.OData.Tests.TestEntities.Customer' does not contain a property named 'Foo'.\"}}", result);
+                Assert.Equal("{\"error\":{\"code\":\"400\",\"message\":\"The type 'MicroLite.Extensions.WebApi.OData.Tests.TestEntities.Customer' does not contain a property named 'Foo'.\",\"target\":\"MicroLite.Extensions.WebApi.OData.Tests.TestEntities.Customer\"}}", result);
             }
 
             [Fact]

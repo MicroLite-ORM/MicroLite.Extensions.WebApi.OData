@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using MicroLite.Builder;
 using MicroLite.Extensions.WebApi.OData.Binders;
 using MicroLite.Extensions.WebApi.OData.Tests.TestEntities;

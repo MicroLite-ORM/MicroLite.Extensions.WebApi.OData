@@ -86,6 +86,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 
             Assert.Equal("The operator 'None' is not implemented by this service.", exception.Message);
             Assert.Equal(HttpStatusCode.NotImplemented, exception.StatusCode);
+            Assert.Equal("$filter", exception.Target);
         }
     }
 }

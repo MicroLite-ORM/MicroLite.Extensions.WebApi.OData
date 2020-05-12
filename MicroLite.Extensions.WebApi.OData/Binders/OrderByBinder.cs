@@ -75,7 +75,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
 
             if (orderByProperty.PropertyPath.Next != null)
             {
-                throw ODataException.NotImplemented("This service does not support nested property paths.");
+                throw ODataException.NotImplemented("This service does not support nested property paths.", "$orderby");
             }
 
             ColumnInfo column = _objectInfo.TableInfo.GetColumnInfoForProperty(orderByProperty.PropertyPath.Property.Name);
