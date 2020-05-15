@@ -1,6 +1,6 @@
 # MicroLite.Extensions.WebApi.OData
 
-MicroLite.Extensions.WebApi.OData is a .NET 4.5 library which adds OData 4.0 support to the extension for the MicroLite ORM Framework to integrate with ASP.NET WebApi.
+MicroLite.Extensions.WebApi.OData is a .NET 4.7.2 library which adds OData 4.0 support to the extension for the MicroLite ORM Framework to integrate with ASP.NET WebApi.
 
 ![Nuget](https://img.shields.io/nuget/dt/MicroLite.Extensions.WebApi.OData)
 
@@ -19,7 +19,7 @@ Install the nuget package `Install-Package MicroLite.Extensions.WebApi.OData`
 
 The NuGet Package contains binaries compiled against (dependencies indented):
 
-* .NET Framework 4.5
+* .NET Framework 4.7.2
   * MicroLite 7.0.0
   * Microsoft.AspNet.WebApi.Core 5.2.7
   * Net.Http.OData 5.0.0
