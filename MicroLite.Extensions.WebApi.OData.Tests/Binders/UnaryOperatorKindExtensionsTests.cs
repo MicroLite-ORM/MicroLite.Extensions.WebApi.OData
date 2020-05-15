@@ -21,6 +21,7 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
 
             Assert.Equal(HttpStatusCode.NotImplemented, exception.StatusCode);
             Assert.Equal("The operator '-1' is not implemented by this service", exception.Message);
+            Assert.Equal("$filter", exception.Target);
         }
     }
 }

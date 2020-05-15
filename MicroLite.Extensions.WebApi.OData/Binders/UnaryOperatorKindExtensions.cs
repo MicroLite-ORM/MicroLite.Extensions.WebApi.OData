@@ -25,7 +25,7 @@ namespace MicroLite.Extensions.WebApi.OData.Binders
                     return "NOT";
 
                 default:
-                    throw ODataException.NotImplemented($"The operator '{unaryOperatorKind}' is not implemented by this service");
+                    throw ODataException.NotImplemented($"The operator '{unaryOperatorKind}' is not implemented by this service", "$filter");
             }
         }
     }

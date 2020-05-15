@@ -208,7 +208,9 @@ namespace MicroLite.Extensions.WebApi.OData
 
             if (columnInfo is null)
             {
-                return ODataError(HttpStatusCode.BadRequest, ODataErrorContent.Create(400, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'."));
+                return ODataError(
+                    HttpStatusCode.BadRequest,
+                    ODataErrorContent.Create(400, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.", entitySet.EdmType.FullName));
             }
 
             SqlQuery sqlQuery = CreateSelectPropertySqlQuery(columnInfo, entityKey);
@@ -241,7 +243,9 @@ namespace MicroLite.Extensions.WebApi.OData
 
             if (columnInfo is null)
             {
-                return ODataError(HttpStatusCode.BadRequest, ODataErrorContent.Create(400, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'."));
+                return ODataError(
+                    HttpStatusCode.BadRequest,
+                    ODataErrorContent.Create(400, $"The type '{entitySet.EdmType.FullName}' does not contain a property named '{propertyName}'.", entitySet.EdmType.FullName));
             }
 
             SqlQuery sqlQuery = CreateSelectPropertySqlQuery(columnInfo, entityKey);
