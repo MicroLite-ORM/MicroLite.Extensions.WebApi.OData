@@ -15,7 +15,6 @@ using MicroLite.Builder.Syntax.Read;
 using MicroLite.Mapping;
 using Net.Http.OData;
 using Net.Http.OData.Query;
-using Net.Http.OData.Query.Binders;
 
 namespace MicroLite.Extensions.WebApi.OData.Binders
 {
