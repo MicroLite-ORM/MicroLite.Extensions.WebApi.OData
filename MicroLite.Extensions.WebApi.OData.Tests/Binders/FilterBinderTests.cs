@@ -33,224 +33,6 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
             Assert.Equal("$filter", exception.Target);
         }
 
-        public class WhenCallingApplyToWithAComplexQuery
-        {
-            private readonly SqlQuery _sqlQuery;
-
-            public WhenCallingApplyToWithAComplexQuery()
-            {
-                TestHelper.EnsureEDM();
-
-                var queryOptions = new ODataQueryOptions(
-                    "?$filter=Created ge 2013-05-01 and Created le 2013-06-12 and Reference eq 'A0113334' and startswith(Name, 'Hayes') eq true",
-                    EntityDataModel.Current.EntitySets["Customers"],
-                    Mock.Of<IODataQueryOptionsValidator>());
-
-                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheFirstQueryValue()
-            {
-                Assert.Equal(new DateTime(2013, 5, 1), _sqlQuery.Arguments[0].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheFourthQueryValue()
-            {
-                Assert.Equal("Hayes%", _sqlQuery.Arguments[3].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheSecondQueryValue()
-            {
-                Assert.Equal(new DateTime(2013, 6, 12), _sqlQuery.Arguments[1].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheThirdQueryValue()
-            {
-                Assert.Equal("A0113334", _sqlQuery.Arguments[2].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheCommandTextShouldContainTheWhereClause()
-            {
-                string expected = SqlBuilder.Select("*")
-                    .From(typeof(Customer))
-                    .Where("((((Created >= ?) AND (Created <= ?)) AND (Reference = ?)) AND (Name LIKE ?))", new DateTime(2013, 5, 1), new DateTime(2013, 6, 12), "A0113334", "Hayes%")
-                    .ToSqlQuery()
-                    .CommandText;
-
-                Assert.Equal(expected, _sqlQuery.CommandText);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ThereShouldBe4ArgumentValues()
-            {
-                Assert.Equal(4, _sqlQuery.Arguments.Count);
-            }
-        }
-
-        public class WhenCallingApplyToWithAGroupedFunctionAndFunction
-        {
-            private readonly SqlQuery _sqlQuery;
-
-            public WhenCallingApplyToWithAGroupedFunctionAndFunction()
-            {
-                TestHelper.EnsureEDM();
-
-                var queryOptions = new ODataQueryOptions(
-                    "?$filter=(endswith(Name, 'son') and endswith(Name, 'nes'))",
-                    EntityDataModel.Current.EntitySets["Customers"],
-                Mock.Of<IODataQueryOptionsValidator>());
-
-                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheFirstQueryValue()
-            {
-                Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheSecondQueryValue()
-            {
-                Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheCommandTextShouldContainTheWhereClause()
-            {
-                string expected = SqlBuilder.Select("*")
-                    .From(typeof(Customer))
-                    .Where("(Name LIKE ? AND Name LIKE ?)", "%son", "%nes")
-                    .ToSqlQuery()
-                    .CommandText;
-
-                Assert.Equal(expected, _sqlQuery.CommandText);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ThereShouldBe2ArgumentValues()
-            {
-                Assert.Equal(2, _sqlQuery.Arguments.Count);
-            }
-        }
-
-        public class WhenCallingApplyToWithAGroupedFunctionOrFunction
-        {
-            private readonly SqlQuery _sqlQuery;
-
-            public WhenCallingApplyToWithAGroupedFunctionOrFunction()
-            {
-                TestHelper.EnsureEDM();
-
-                var queryOptions = new ODataQueryOptions(
-                    "?$filter=(endswith(Name, 'son') or endswith(Name, 'nes'))",
-                    EntityDataModel.Current.EntitySets["Customers"],
-                    Mock.Of<IODataQueryOptionsValidator>());
-
-                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheFirstQueryValue()
-            {
-                Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheSecondQueryValue()
-            {
-                Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheCommandTextShouldContainTheWhereClause()
-            {
-                string expected = SqlBuilder.Select("*")
-                    .From(typeof(Customer))
-                    .Where("(Name LIKE ? OR Name LIKE ?)", "%son", "%nes")
-                    .ToSqlQuery()
-                    .CommandText;
-
-                Assert.Equal(expected, _sqlQuery.CommandText);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ThereShouldBe2ArgumentValues()
-            {
-                Assert.Equal(2, _sqlQuery.Arguments.Count);
-            }
-        }
-
-        public class WhenCallingApplyToWithConcatFunction
-        {
-            private readonly SqlQuery _sqlQuery;
-
-            public WhenCallingApplyToWithConcatFunction()
-            {
-                TestHelper.EnsureEDM();
-
-                var queryOptions = new ODataQueryOptions(
-                    "?$filter=concat(concat(Forename, ', '), Name) eq 'John, Smith'",
-                    EntityDataModel.Current.EntitySets["Customers"],
-                    Mock.Of<IODataQueryOptionsValidator>());
-
-                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheFirstQueryValue()
-            {
-                Assert.Equal(", ", _sqlQuery.Arguments[0].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheArgumentsShouldContainTheSecondQueryValue()
-            {
-                Assert.Equal("John, Smith", _sqlQuery.Arguments[1].Value);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void TheCommandTextShouldContainTheWhereClause()
-            {
-                string expected = SqlBuilder.Select("*")
-                    .From(typeof(Customer))
-                    .Where("(Forename + ? + Name = ?)", ", ", "John, Smith")
-                    .ToSqlQuery()
-                    .CommandText;
-
-                Assert.Equal(expected, _sqlQuery.CommandText);
-            }
-
-            [Fact]
-            [Trait("Category", "Unit")]
-            public void ThereShouldBe2ArgumentValues()
-            {
-                Assert.Equal(2, _sqlQuery.Arguments.Count);
-            }
-        }
-
         public class WhenCallingBindFilterQueryOptionWithAPropertyEqualsAndGreaterThanAndLessThan
         {
             private readonly SqlQuery _sqlQuery;
@@ -1657,6 +1439,57 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
             }
         }
 
+        public class WhenCallingBindFilterQueryOptionWithConcatFunction
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterQueryOptionWithConcatFunction()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=concat(concat(Forename, ', '), Name) eq 'John, Smith'",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFirstQueryValue()
+            {
+                Assert.Equal(", ", _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheSecondQueryValue()
+            {
+                Assert.Equal("John, Smith", _sqlQuery.Arguments[1].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Customer))
+                    .Where("(Forename + ? + Name = ?)", ", ", "John, Smith")
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe2ArgumentValues()
+            {
+                Assert.Equal(2, _sqlQuery.Arguments.Count);
+            }
+        }
+
         public class WhenCallingBindFilterQueryOptionWithNotSinglePropertyEqual
         {
             private readonly SqlQuery _sqlQuery;
@@ -1942,6 +1775,173 @@ namespace MicroLite.Extensions.WebApi.OData.Tests.Binders
                 string expected = SqlBuilder.Select("*")
                     .From(typeof(Invoice))
                     .Where("((Quantity - ?) = ?)", 10, 15)
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe2ArgumentValues()
+            {
+                Assert.Equal(2, _sqlQuery.Arguments.Count);
+            }
+        }
+
+        public class WhenCallingBindFilterWithAComplexQuery
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterWithAComplexQuery()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=Created ge 2013-05-01 and Created le 2013-06-12 and Reference eq 'A0113334' and startswith(Name, 'Hayes') eq true",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFirstQueryValue()
+            {
+                Assert.Equal(new DateTime(2013, 5, 1), _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFourthQueryValue()
+            {
+                Assert.Equal("Hayes%", _sqlQuery.Arguments[3].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheSecondQueryValue()
+            {
+                Assert.Equal(new DateTime(2013, 6, 12), _sqlQuery.Arguments[1].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheThirdQueryValue()
+            {
+                Assert.Equal("A0113334", _sqlQuery.Arguments[2].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Customer))
+                    .Where("((((Created >= ?) AND (Created <= ?)) AND (Reference = ?)) AND (Name LIKE ?))", new DateTime(2013, 5, 1), new DateTime(2013, 6, 12), "A0113334", "Hayes%")
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe4ArgumentValues()
+            {
+                Assert.Equal(4, _sqlQuery.Arguments.Count);
+            }
+        }
+
+        public class WhenCallingBindFilterWithAGroupedFunctionAndFunction
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterWithAGroupedFunctionAndFunction()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=(endswith(Name, 'son') and endswith(Name, 'nes'))",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFirstQueryValue()
+            {
+                Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheSecondQueryValue()
+            {
+                Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Customer))
+                    .Where("(Name LIKE ? AND Name LIKE ?)", "%son", "%nes")
+                    .ToSqlQuery()
+                    .CommandText;
+
+                Assert.Equal(expected, _sqlQuery.CommandText);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void ThereShouldBe2ArgumentValues()
+            {
+                Assert.Equal(2, _sqlQuery.Arguments.Count);
+            }
+        }
+
+        public class WhenCallingBindFilterWithAGroupedFunctionOrFunction
+        {
+            private readonly SqlQuery _sqlQuery;
+
+            public WhenCallingBindFilterWithAGroupedFunctionOrFunction()
+            {
+                TestHelper.EnsureEDM();
+
+                var queryOptions = new ODataQueryOptions(
+                    "?$filter=(endswith(Name, 'son') or endswith(Name, 'nes'))",
+                    EntityDataModel.Current.EntitySets["Customers"],
+                    Mock.Of<IODataQueryOptionsValidator>());
+
+                _sqlQuery = FilterBinder.BindFilter(queryOptions.Filter, ObjectInfo.For(typeof(Customer)), SqlBuilder.Select("*").From(typeof(Customer))).ToSqlQuery();
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheFirstQueryValue()
+            {
+                Assert.Equal("%son", _sqlQuery.Arguments[0].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheArgumentsShouldContainTheSecondQueryValue()
+            {
+                Assert.Equal("%nes", _sqlQuery.Arguments[1].Value);
+            }
+
+            [Fact]
+            [Trait("Category", "Unit")]
+            public void TheCommandTextShouldContainTheWhereClause()
+            {
+                string expected = SqlBuilder.Select("*")
+                    .From(typeof(Customer))
+                    .Where("(Name LIKE ? OR Name LIKE ?)", "%son", "%nes")
                     .ToSqlQuery()
                     .CommandText;
 
